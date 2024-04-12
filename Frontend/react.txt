@@ -1,0 +1,10 @@
+primero instalar nodejs
+
+para instalar vite 
+
+hay que instalar npm antes
+
+*npm create vite@latest
+*Luego ingresar a la app creada (nombre de la app: miApp)
+*npm install
+*npm run dev (para ejecutar la aplicacion)
