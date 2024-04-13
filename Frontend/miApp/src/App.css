@@ -1,14 +1,27 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+
+
+#b1:hover{
+  background-color:rgb(78,255,167);
 }
 
-.card {
-  padding: 2em;
+#b1:focus{
+  background-color:rgb(78,255,78) ;
 }
 
-.read-the-docs {
-  color: #888;
+#b2:hover{
+  background-color: rgb(53,162,244) ;
+}
+
+#b2:focus{
+  background-color:aqua;
+}
+
+#b3:hover{
+  background-color: rgb(244,53,53);
+  
+}
+
+#b3:focus{
+  background-color: rgb(153,222,234);
+  
 }

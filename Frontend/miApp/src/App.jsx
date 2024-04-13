@@ -1,5 +1,5 @@
 import React from "react";
-
+import "./App.css"
 import Consola from "./Components/consola"
 import Sistema from "./Components/sistema"
 import Reportes from "./Components/reportes"
@@ -18,6 +18,8 @@ function App() {
 
   const pantalla1 = () => {
     console.log("pantalla 1")
+
+    //document.getElementById("b1").style.backgroundColor = "light-blue"
 
     sistema = document.getElementById("sistema").style.display
     reportes = document.getElementById("reportes").style.display
@@ -66,6 +68,8 @@ function App() {
     
   }
 
+  
+
   return (
     
     <>
@@ -74,15 +78,15 @@ function App() {
         <div class="d-flex flex-column flex-shrink-0 p-3" style={{width:280, position:"absolute", height:900, backgroundColor:"rgb(255, 255, 224)"}}>
           <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-              <button onClick={pantalla1} class="nav-link active" aria-current="page">Pantalla1 </button>
+              <button onClick={pantalla1} id="b1" style={{width:250}} class="nav-link link-dark" aria-current="page">Pantalla1 </button>
             </li>
             <hr/>
             <li>
-              <button onClick={pantalla2} class="nav-link link-dark">Pantalla2</button>
+              <button onClick={pantalla2} id="b2" style={{width:250}} class="nav-link link-dark">Pantalla2</button>
             </li>
             <hr/>
             <li>
-              <button onClick={pantalla3} class="nav-link link-dark">Pantalla3</button>
+              <button onClick={pantalla3} id="b3" style={{width:250}} class="nav-link link-dark">Pantalla3</button>
             
             </li>
           </ul>
