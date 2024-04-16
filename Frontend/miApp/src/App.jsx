@@ -96,7 +96,7 @@ function App() {
         <div id="consola" style={{position:"relative", marginLeft:280, border:"1px solid blue", height:500, display:"block"}}>
           <Router>
             <Routes>
-              <Route path="/consola" element={<Consola/>}></Route>
+              <Route path="/" element={<Consola/>}></Route>
             </Routes>
           </Router>
         </div>
@@ -104,7 +104,7 @@ function App() {
         <div id="sistema" style={{position:"relative", marginLeft:280, border:"1px solid blue", height:500, display:"none"}}>
           <Router>
             <Routes>
-              <Route path="/consola" element={<Sistema/>}></Route>
+              <Route path="/" element={<Sistema/>}></Route>
             </Routes>
           </Router>
         </div>
@@ -112,7 +112,7 @@ function App() {
         <div id="reportes" style={{position:"relative", marginLeft:280, border:"1px solid blue", height:500, display:"none"}}>
           <Router>
             <Routes>
-              <Route path="/consola" element={<Reportes/>}></Route>
+              <Route path="/" element={<Reportes/>}></Route>
             </Routes>
           </Router>
         </div>
