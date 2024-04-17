@@ -438,6 +438,7 @@ func Fdisk(size int, driveletter string, name string, unit string, type_ string,
 				byteString_name := make([]byte, 16)
 				byteString_fit := make([]byte, 1)
 				byteString_type := make([]byte, 1)
+
 				copy(byteString_name, name)
 				copy(byteString_fit, fit)
 				copy(byteString_type, type_)

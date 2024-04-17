@@ -28,81 +28,38 @@ var TasksData = Tasks{
 	},
 }
 
-type Disk []Funciones.MBR
-
 type Mbr struct {
 	Mbr_tamano int32 `json:"tamano"`
 
-	Mbr_fecha_creacion [16]byte `json:"fecha_creacion"` // de tipo time
+	Mbr_fecha_creacion string `json:"fecha_creacion"` // de tipo time
 
 	Mbr_dsk_signature int32 `json:"signature"`
 
-	Dsk_fit [1]byte `json:"fit"` // B (mejor ajuste)  F(primer ajuste) W(peor ajuste)
+	Dsk_fit string `json:"fit"` // B (mejor ajuste)  F(primer ajuste) W(peor ajuste)
 
-	Mbr_partitions Partition `json:"particiones"` // este arreglo simulara las 4 particiones
+	Mbr_partitions [4]Partition `json:"particiones"` // este arreglo simulara las 4 particiones
 
 }
 
 type Partition struct {
 	Part_status bool `json:"status"` // es de tipo bool(indica si la particion esta montada o no)
 
-	Part_type [1]byte `json:"type"` //(indica el tipo de particion: primaria(P) o extendida(E))
+	Part_type string `json:"type"` //(indica el tipo de particion: primaria(P) o extendida(E))
 
-	Part_fit [1]byte `json:"fit"` // indica el tipo de ajuste(B mejor ajuste  F primer ajuste W peor ajuste)
+	Part_fit string `json:"fit"` // indica el tipo de ajuste(B mejor ajuste  F primer ajuste W peor ajuste)
 
 	Part_start int32 `json:"start"` // indica en que byte del disco inicia la particion
 
 	Part_size int32 `json:"size"` //(part_s) contiene el tamano total de la particion en bytes (por defecto es cero)
 
-	Part_name [16]byte `json:"name"` // contiene el nombre de la particion
+	Part_name string `json:"name"` // contiene el nombre de la particion
 
 	Part_correlative int32 `json:"correlative"` // contiene el correlativo de la particion
 
-	Part_id [4]byte `json:"id"`
+	//Part_identificador string `json:"identificador"`
+
+	Part_id string `json:"id"`
 }
-
-var slice_fecha [16]byte
-var slice_fit [1]byte
-var slice_type [1]byte
-var slice_name [16]byte
-var slice_id [4]byte
-
-type Datos []Mbr
-
-var diskData = Datos{
-
-	{
-		Mbr_tamano:         0,
-		Mbr_fecha_creacion: slice_fecha,
-		Mbr_dsk_signature:  0,
-		Dsk_fit:            slice_fit,
-		Mbr_partitions: Partition{
-			Part_status:      true,
-			Part_type:        slice_type,
-			Part_fit:         slice_fit,
-			Part_start:       0,
-			Part_size:        0,
-			Part_name:        slice_name,
-			Part_correlative: 0,
-			Part_id:          slice_id,
-		},
-	},
-}
-
-/*
-name := Name{FirstName: "Dikxya", Surname: "Lhyaho"}
-employee := Employee{Position: "Senior Developer", Name: name}
-*/
-/*
-var data map[string]interface{}
-	err := json.Unmarshal([]byte(jsonData), &data)
-	if err != nil {
-		fmt.Printf("could not unmarshal json: %s\n", err)
-		return
-	}
-
-	fmt.Printf("json map: %v\n", data)
-*/
 
 func insertComand(w http.ResponseWriter, r *http.Request) {
 
@@ -135,40 +92,155 @@ func getDisk(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	letra := vars["name"]
 
-	/*
-		for _, task := range TasksData {
-			if task.ID == disk {
-				w.Header().Set("Content-Type", "application/json")
-				json.NewEncoder(w).Encode(task)
-			}
-		}
-	*/
-
 	file, err := Funciones.AbrirArchivo("./archivos/" + letra + ".dsk")
 	if err != nil {
 		return
 	}
+
+	defer file.Close()
 
 	var tempMBR Funciones.MBR
 
 	if err := Funciones.LeerObjeto(file, &tempMBR, 0); err != nil {
 		return
 	}
-	// Print object
-	fmt.Println("\nImprimiendo informacion del disco ", letra)
-	fmt.Println()
-	Funciones.PrintMBR(tempMBR)
 
-	for i := 0; i < len(tempMBR.Mbr_partitions); i++ {
-		/*fmt.Fprintf(w, "Particion %v Nombre: %s Tipo: %s fit: %s tamano: %v start: %v id: %s correlativo: %v status: %t", i,
-		string(tempMBR.Mbr_partitions[i].Part_name[:]), string(tempMBR.Mbr_partitions[i].Part_type[:]), string(tempMBR.Mbr_partitions[i].Part_fit[:]), tempMBR.Mbr_partitions[i].Part_size,
-		tempMBR.Mbr_partitions[i].Part_start, string(tempMBR.Mbr_partitions[i].Part_id[:]), tempMBR.Mbr_partitions[i].Part_correlative, tempMBR.Mbr_partitions[i].Part_status)*/
-		fmt.Fprintf(w, "Nombre: %v ", string(tempMBR.Mbr_partitions[i].Part_name[:]))
+	var indice_fecha int
+
+	var newMbr Mbr
+
+	for k := 0; k < len(tempMBR.Mbr_fecha_creacion[:]); k++ {
+		if tempMBR.Mbr_fecha_creacion[k] == 0 { //quitando espacios(los ceros restantes) al slice de B_name
+			indice_fecha = k
+			break
+		}
+
 	}
+	//fmt.Println("\nEl indice es: ", indice)
+	fecha := string(tempMBR.Mbr_fecha_creacion[:indice_fecha])
+
+	var indice_fit int
+
+	for k := 0; k < len(tempMBR.Dsk_fit[:]); k++ {
+		if tempMBR.Dsk_fit[k] == 0 { //quitando espacios(los ceros restantes) al slice de B_name
+			indice_fit = k
+			break
+		}
+
+	}
+	//fmt.Println("\nEl indice es: ", indice)
+	fit := string(tempMBR.Dsk_fit[:indice_fit])
+
+	newMbr.Dsk_fit = fit
+	newMbr.Mbr_dsk_signature = tempMBR.Mbr_dsk_signature
+	newMbr.Mbr_fecha_creacion = fecha
+
+	for j := 0; j < 4; j++ {
+
+		var indice_fit int
+
+		for k := 0; k < len(tempMBR.Mbr_partitions[j].Part_fit[:]); k++ {
+			if tempMBR.Mbr_partitions[j].Part_fit[k] == 0 { //quitando espacios(los ceros restantes) al slice de B_name
+				indice_fit = k
+				break
+			}
+
+		}
+
+		var fit string
+
+		if indice_fit != 0 {
+			fit = string(tempMBR.Mbr_partitions[j].Part_fit[:indice_fit])
+		}
+
+		var indice_tipo int
+
+		for k := 0; k < len(tempMBR.Mbr_partitions[j].Part_type[:]); k++ {
+			if tempMBR.Mbr_partitions[j].Part_type[k] == 0 { //quitando espacios(los ceros restantes) al slice de B_name
+				indice_tipo = k
+				break
+			}
+
+		}
+
+		var tipo string
+
+		if indice_tipo != 0 {
+			tipo = string(tempMBR.Mbr_partitions[j].Part_type[:indice_tipo])
+		}
+
+		var indice_name int
+
+		for k := 0; k < len(tempMBR.Mbr_partitions[j].Part_name[:]); k++ {
+			if tempMBR.Mbr_partitions[j].Part_name[k] == 0 { //quitando espacios(los ceros restantes) al slice de B_name
+				indice_name = k
+				break
+			}
+
+		}
+
+		var name string
+
+		if indice_name != 0 {
+			name = string(tempMBR.Mbr_partitions[j].Part_name[:indice_name])
+		}
+
+		var indice_id int
+
+		for k := 0; k < len(tempMBR.Mbr_partitions[j].Part_id[:]); k++ {
+			if tempMBR.Mbr_partitions[j].Part_id[k] == 0 { //quitando espacios(los ceros restantes) al slice de B_name
+
+				indice_id = k
+
+				break
+			}
+
+		}
+
+		var id string
+
+		var bytes_id [4]byte
+
+		if indice_id != 0 {
+
+			if tempMBR.Mbr_partitions[j].Part_id != bytes_id { // si el slice Part_id no esta vacio
+
+				id = string(tempMBR.Mbr_partitions[j].Part_id[:indice_id])
+				newMbr.Mbr_partitions[j].Part_id = id
+			}
+
+		} else {
+
+			if tempMBR.Mbr_partitions[j].Part_id != bytes_id { // si el slice Part_id no esta vacio
+
+				id = string(tempMBR.Mbr_partitions[j].Part_id[:])
+				newMbr.Mbr_partitions[j].Part_id = id
+			}
+
+		}
+
+		newMbr.Mbr_partitions[j].Part_correlative = tempMBR.Mbr_partitions[j].Part_correlative
+		newMbr.Mbr_partitions[j].Part_fit = fit
+
+		newMbr.Mbr_partitions[j].Part_name = name
+		newMbr.Mbr_partitions[j].Part_size = tempMBR.Mbr_partitions[j].Part_size
+		newMbr.Mbr_partitions[j].Part_start = tempMBR.Mbr_partitions[j].Part_start
+		newMbr.Mbr_partitions[j].Part_status = tempMBR.Mbr_partitions[j].Part_status
+		newMbr.Mbr_partitions[j].Part_type = tipo
+	}
+
+	mbr_json, err := json.MarshalIndent(newMbr, "", "\t")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(string(mbr_json))
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(diskData)
+	json.NewEncoder(w).Encode(newMbr)
+
 }
 
 func welcome(w http.ResponseWriter, r *http.Request) {
@@ -199,3 +271,12 @@ func main() {
 	//go get github.com/githubnemo/CompileDaemon   para actualizar cambios automaticamente en el servidor sin necesidad de cerrarlo
 
 }
+
+/*
+for i := 0; i < len(tempMBR.Mbr_partitions); i++ {
+		/*fmt.Fprintf(w, "Particion %v Nombre: %s Tipo: %s fit: %s tamano: %v start: %v id: %s correlativo: %v status: %t", i,
+		string(tempMBR.Mbr_partitions[i].Part_name[:]), string(tempMBR.Mbr_partitions[i].Part_type[:]), string(tempMBR.Mbr_partitions[i].Part_fit[:]), tempMBR.Mbr_partitions[i].Part_size,
+		tempMBR.Mbr_partitions[i].Part_start, string(tempMBR.Mbr_partitions[i].Part_id[:]), tempMBR.Mbr_partitions[i].Part_correlative, tempMBR.Mbr_partitions[i].Part_status)
+		fmt.Fprintf(w, "Nombre: %v ", string(tempMBR.Mbr_partitions[i].Part_name[:]))
+	}
+*/
