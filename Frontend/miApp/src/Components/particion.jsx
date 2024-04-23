@@ -1,14 +1,18 @@
 import partitionIMG from "../../assets/particion.png";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Login from "./login"
+import { UserContext } from "./usercontext";
+
 
 export default function Partition() {
   const { id } = useParams()
   const [data, setData] = useState([])
+  
   const navigate = useNavigate()
+  const {setValue} = useContext(UserContext)
 
   let disco = id.charAt(0);
+  
 
   useState(() => {
 
@@ -30,19 +34,23 @@ export default function Partition() {
   }, [])
 
   const onClick = (objIterable) => {
+
+    //console.log("El id es: ",objIterable.id)
+    setValue(objIterable.id)
     
+    //console.log("El id es: ",particionID)
     navigate(`/Login/${disco}/${objIterable.name}`)
   }
 
   return (
-    <>
+    
 
       <div style={{position: "relative", marginLeft:280, border: "red 1px solid", display: "flex", flexDirection: "row" }}>
         
         {
           data.map((objIterable, index) => {
             return (
-            
+            <>
               <div key={index} style={{
                 border: "green 1px solid",
                 display: "flex",
@@ -55,12 +63,16 @@ export default function Partition() {
                 
                 <img src={partitionIMG} alt="disk" style={{ width: "100px" }} />
                 <p>{objIterable.name}</p>
+                
               </div>
+
+            </>
             )
           })
         }
 
       </div>
-    </>
+
+    
   )
 }

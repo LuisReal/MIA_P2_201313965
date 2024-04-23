@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css"
 import Consola from "./Components/consola"
 import Disco from "./Components/disco"
 import Reportes from "./Components/reportes"
 import Partition from "./Components/particion"
 import Login from "./Components/login"
+import { UserContext } from "./Components/usercontext"
 
 import {
   HashRouter,
@@ -15,6 +16,7 @@ import {
 
 function App() {
   
+  const [value, setValue] = useState("")
 
   return (
     
@@ -45,28 +47,16 @@ function App() {
 
         </div>
 
-          
+        <UserContext.Provider value={{ value, setValue }}>
             <Routes>
               <Route path="/" element={<Consola/>}></Route>
-            </Routes>
-        
-            <Routes>
               <Route path="/diskScreen" element={<Disco/>}></Route>
-            </Routes>
-          
-            <Routes>
               <Route path="/disk/:id" element={<Partition/>}></Route>
-            </Routes>
-
-            <Routes>
               <Route path="/Login/:disk/:particion" element={<Login/>}></Route>
-            </Routes>
-          
-            <Routes>
               <Route path="/reports" element={<Reportes/>}></Route>
             </Routes>
           
-        
+        </UserContext.Provider>
       </div>
 
       </HashRouter>

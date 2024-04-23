@@ -1,15 +1,16 @@
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
+import { UserContext } from "./usercontext";
 
 export default function Login() {
   const [data, setData] = useState([]) 
   const navigate = useNavigate()
 
   const { disk, particion } = useParams()
+  const {value} = useContext(UserContext)
   
-
+  console.log("La info del id es: ", value)
   let username;
   let password;
 
@@ -42,7 +43,7 @@ export default function Login() {
     })
 
    
-    //navigate(`/disk/${disk}/${particion}/sucess`)
+    navigate(`/disk/${disk}/${particion}/sucess`)
     
 }
 
