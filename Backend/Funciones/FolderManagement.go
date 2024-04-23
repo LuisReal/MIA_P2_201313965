@@ -15,7 +15,7 @@ func Mkdir(path string, r string) error { //mkdir -path=/bin        // permisos 
 
 	//fmt.Println("\nUsuario con sesion actual: ", user_.Nombre, " ID: ", user_.Id, " r: ", r)
 
-	id := user_.Id
+	id := User_.Id
 
 	driveletter := string(id[0])
 
@@ -245,8 +245,8 @@ func AddingNewFolder(carpeta []string, Inodo Inode, file *os.File, tempSuperbloc
 
 								var newInode Inode
 
-								user_id, _ := strconv.Atoi(user_.Uid)
-								group_id, _ := strconv.Atoi(user_.Gid)
+								user_id, _ := strconv.Atoi(User_.Uid)
+								group_id, _ := strconv.Atoi(User_.Gid)
 
 								newInode.I_uid = int32(user_id)
 								newInode.I_gid = int32(group_id)
@@ -392,10 +392,10 @@ func AddingNewFolder(carpeta []string, Inodo Inode, file *os.File, tempSuperbloc
 
 			tempSuperblock.S_free_inodes_count -= 1
 
-			userid, _ := strconv.Atoi(user_.Uid)
+			userid, _ := strconv.Atoi(User_.Uid)
 			newInode.I_uid = int32(userid)
 
-			groupid, _ := strconv.Atoi(user_.Gid)
+			groupid, _ := strconv.Atoi(User_.Gid)
 			newInode.I_gid = int32(groupid)
 
 			numBlocks := tempSuperblock.S_blocks_count - tempSuperblock.S_free_blocks_count
@@ -532,8 +532,8 @@ func AddingFolderRoot(carpeta string, Inodo Inode, file *os.File, tempSuperblock
 							//Creando nuevo Inodo
 							var newInode Inode
 
-							user_id, _ := strconv.Atoi(user_.Uid)
-							group_id, _ := strconv.Atoi(user_.Gid)
+							user_id, _ := strconv.Atoi(User_.Uid)
+							group_id, _ := strconv.Atoi(User_.Gid)
 
 							newInode.I_uid = int32(user_id)
 							newInode.I_gid = int32(group_id)
@@ -653,10 +653,10 @@ func AddingFolderRoot(carpeta string, Inodo Inode, file *os.File, tempSuperblock
 
 			tempSuperblock.S_free_inodes_count -= 1
 
-			userid, _ := strconv.Atoi(user_.Uid)
+			userid, _ := strconv.Atoi(User_.Uid)
 			newInode.I_uid = int32(userid)
 
-			groupid, _ := strconv.Atoi(user_.Gid)
+			groupid, _ := strconv.Atoi(User_.Gid)
 			newInode.I_gid = int32(groupid)
 
 			numBlocks := tempSuperblock.S_blocks_count - tempSuperblock.S_free_blocks_count

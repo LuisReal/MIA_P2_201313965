@@ -11,7 +11,7 @@ import (
 func Login(user string, pass string, id string) error {
 	fmt.Println("\n\n========================= LOGIN ===========================")
 
-	if user_.Nombre == user {
+	if User_.Nombre == user {
 		fmt.Println("\n\n ******* ERROR: El usuario ya esta logueado *******")
 
 		fmt.Println("\n\n========================= FIN LOGIN ===========================")
@@ -152,13 +152,13 @@ func Login(user string, pass string, id string) error {
 
 			if string(datos[3]) == user && datos[4] == pass {
 
-				user_.Nombre = datos[3]
-				user_.Id = id
-				user_.Status = true
-				user_.Gid, _ = SearchByUser(datos[2], crrInode, file, tempSuperblock)
-				user_.Uid = strconv.Itoa(user_id)
+				User_.Nombre = datos[3]
+				User_.Id = id
+				User_.Status = true
+				User_.Gid, _ = SearchByUser(datos[2], crrInode, file, tempSuperblock)
+				User_.Uid = strconv.Itoa(user_id)
 
-				fmt.Println("\nUsuario: ", user_.Nombre, " ID Particion: ", user_.Id, " Group ID: ", user_.Gid, " User ID: ", user_.Uid)
+				fmt.Println("\nUsuario: ", User_.Nombre, " ID Particion: ", User_.Id, " Group ID: ", User_.Gid, " User ID: ", User_.Uid)
 
 				fmt.Println("\n **********Usuario encontrado***********")
 

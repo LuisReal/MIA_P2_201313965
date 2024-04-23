@@ -23,6 +23,11 @@ function Consola() {
     const mostrarDatos = (event) => {
         event.preventDefault();
         console.log(datos.comando)
+
+        /*
+        fetch('http://localhost:3000/disk')
+        .then(response => response.json())
+        .then(partitionData => {setData(partitionData.particiones);})*/
     }
 
 

@@ -23,7 +23,7 @@ func Cat(path string) error {
 
 	//cat -file=/user.txt
 
-	id := strings.ToUpper(user_.Id)
+	id := strings.ToUpper(User_.Id)
 
 	file, tempSuperblock, _, err := getSuperBlock(id)
 
@@ -170,7 +170,7 @@ func Remove(path string) error {
 
 	//cat -file=/user.txt
 
-	id := strings.ToUpper(user_.Id)
+	id := strings.ToUpper(User_.Id)
 
 	file, tempSuperblock, superblock_start, err := getSuperBlock(id)
 

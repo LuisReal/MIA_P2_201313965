@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-var user_ User
+var User_ User
 
 var re = regexp.MustCompile(`-(\w+)=("[^"]+"|\S+)`)
 
@@ -713,11 +713,11 @@ func bn_logout() {
 	//execute -path=/home/darkun/Escritorio/scripts.sdaa
 
 	fmt.Println("\n\n========================= Iniciando Logout =========================")
-	if user_.Status {
-		fmt.Println("\n Cerrando sesion de usuario: ", user_.Nombre)
-		user_.Nombre = ""
-		user_.Status = false
-		user_.Id = ""
+	if User_.Status {
+		fmt.Println("\n Cerrando sesion de usuario: ", User_.Nombre)
+		User_.Nombre = ""
+		User_.Status = false
+		User_.Id = ""
 	} else {
 		fmt.Println("\nERROR: No hay sesion actual")
 	}
@@ -729,7 +729,7 @@ func bn_mkgrp(input string) {
 
 	//execute -path=/home/darkun/Escritorio/scripts.sdaa
 
-	if user_.Nombre == "root" && user_.Status { //si el usuario es root y esta logueado(true)
+	if User_.Nombre == "root" && User_.Status { //si el usuario es root y esta logueado(true)
 		// Define flags
 		fs := flag.NewFlagSet("mkgrp", flag.ExitOnError)
 		name := fs.String("name", "", "nombre de grupo")
@@ -757,7 +757,7 @@ func bn_mkgrp(input string) {
 			}
 		}
 
-		Mkgrp(*name, user_.Id)
+		Mkgrp(*name, User_.Id)
 
 	} else {
 		fmt.Println("\n\n******************Necesita iniciar sesion como ususario ROOT***********************")
@@ -769,7 +769,7 @@ func bn_rmgrp(input string) {
 
 	//execute -path=/home/darkun/Escritorio/scripts.sdaa
 
-	if user_.Nombre == "root" && user_.Status { //si el usuario es root y esta logueado(true)
+	if User_.Nombre == "root" && User_.Status { //si el usuario es root y esta logueado(true)
 		// Define flags
 		fs := flag.NewFlagSet("rmgrp", flag.ExitOnError)
 		name := fs.String("name", "", "nombre de grupo")
@@ -797,7 +797,7 @@ func bn_rmgrp(input string) {
 			}
 		}
 
-		Rmgrp(*name, user_.Id)
+		Rmgrp(*name, User_.Id)
 
 	} else {
 		fmt.Println("\n\n******************Necesita iniciar sesion como ususario ROOT para poder REMOVER un grupo***********************")
@@ -809,7 +809,7 @@ func bn_mkusr(input string) {
 
 	//execute -path=/home/darkun/Escritorio/scripts.sdaa
 
-	if user_.Nombre == "root" && user_.Status { //si el usuario es root y esta logueado(true)
+	if User_.Nombre == "root" && User_.Status { //si el usuario es root y esta logueado(true)
 		// Define flags
 		fs := flag.NewFlagSet("mkusr", flag.ExitOnError)
 		user := fs.String("user", "", "nombre de usuario")
@@ -839,7 +839,7 @@ func bn_mkusr(input string) {
 			}
 		}
 
-		Mkusr(*user, *pass, *group, user_.Id)
+		Mkusr(*user, *pass, *group, User_.Id)
 
 	} else {
 		fmt.Println("\n\n******************Necesita iniciar sesion como ususario ROOT para poder crear un usuario ***********************")
@@ -851,7 +851,7 @@ func bn_rmusr(input string) {
 
 	//execute -path=/home/darkun/Escritorio/scripts.sdaa
 
-	if user_.Nombre == "root" && user_.Status { //si el usuario es root y esta logueado(true)
+	if User_.Nombre == "root" && User_.Status { //si el usuario es root y esta logueado(true)
 		// Define flags
 		fs := flag.NewFlagSet("rmusr", flag.ExitOnError)
 		user := fs.String("user", "", "nombre de usuario")
@@ -879,7 +879,7 @@ func bn_rmusr(input string) {
 			}
 		}
 
-		Rmusr(*user, user_.Id)
+		Rmusr(*user, User_.Id)
 
 	} else {
 		fmt.Println("\n\n******************Necesita iniciar sesion como ususario ROOT para poder REMOVER un grupo***********************")

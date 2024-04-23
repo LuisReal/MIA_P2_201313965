@@ -6,9 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
-	"net/http"
 
+	"net/http"
+	"os"
+
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -17,6 +19,13 @@ type Task struct {
 	Command string `json:"comand"`
 	Params  string `json:"params"`
 }
+
+type Login struct {
+	IdPartition string `json:"id"`
+	Usuario     string `json:"user"`
+}
+
+type Sesion []Login
 
 type Tasks []Task
 
@@ -27,6 +36,19 @@ var TasksData = Tasks{
 		Params:  "params",
 	},
 }
+
+type Disk struct {
+	Nombre string `json:"nombre"`
+}
+
+type Discos []Disk
+
+/*
+var DisksData = Discos{
+	{
+		Nombre: "",
+	},
+}*/
 
 type Mbr struct {
 	Mbr_tamano int32 `json:"tamano"`
@@ -64,6 +86,8 @@ type Partition struct {
 func insertComand(w http.ResponseWriter, r *http.Request) {
 
 	var newTask Task
+	var login Login
+	var sesionArray Sesion
 
 	body, err := io.ReadAll(r.Body)
 
@@ -77,14 +101,25 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 
 	Funciones.Analyze(input) // enviando el comando
 
-	fmt.Fprintf(w, "Comando enviado con exito")
+	//fmt.Fprintf(w, "Comando enviado con exito\n")
 
 	//newTask.ID = len(TasksData) + 1
 	//TasksData = append(TasksData, newTask)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(newTask)
+
+	if Funciones.User_.Status {
+		//fmt.Fprintf(w, "Devolviendo la informacion del login\n")
+		login.Usuario = Funciones.User_.Nombre
+		login.IdPartition = Funciones.User_.Id
+
+		sesionArray = append(sesionArray, login)
+
+		json.NewEncoder(w).Encode(sesionArray)
+	} else {
+		json.NewEncoder(w).Encode(newTask)
+	}
 
 }
 
@@ -247,6 +282,33 @@ func welcome(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Bienvenido")
 }
 
+func getAllDisks(w http.ResponseWriter, r *http.Request) {
+
+	var newDisk Disk
+
+	var discos Discos
+
+	lista_discos, err := os.ReadDir("./archivos")
+
+	if err != nil {
+		fmt.Println("Hubo un error al leer los discos")
+	}
+
+	for _, f := range lista_discos {
+
+		newDisk.Nombre = f.Name()
+
+		discos = append(discos, newDisk)
+	}
+
+	//json.Unmarshal(reqBody, &Disco)
+
+	w.Header().Set("Content-Type", "application/json")
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(discos)
+}
+
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -255,6 +317,7 @@ func main() {
 	router.HandleFunc("/", welcome)
 	router.HandleFunc("/insert", insertComand).Methods("POST")
 	router.HandleFunc("/disk/{name}", getDisk).Methods("GET")
+	router.HandleFunc("/discos", getAllDisks).Methods("GET")
 
 	// Tasks Routes
 	/*
@@ -265,7 +328,13 @@ func main() {
 		router.HandleFunc("/tasks/{id}", handlers.UpdateTask).Methods("PUT")*/
 
 	fmt.Println("Server started on port ", 3000)
-	log.Fatal(http.ListenAndServe(":3000", router)) // para crear un servidor
+	http.ListenAndServe(":3000",
+
+		handlers.CORS(
+			handlers.AllowedOrigins([]string{"*"}),
+			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),
+			handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
+		)(router)) // para crear un servidor
 
 	///go get -u github.com/gorilla/mux       obtiene paquete para poder crear rutas para API rest
 	//go get github.com/githubnemo/CompileDaemon   para actualizar cambios automaticamente en el servidor sin necesidad de cerrarlo
