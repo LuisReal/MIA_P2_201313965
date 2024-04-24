@@ -1,0 +1,31 @@
+digraph H {
+        label="Disco A";
+        fontsize="50"
+		graph [pad="0.5", nodesep="0.5", ranksep="1"];
+		node [shape=plaintext]
+		 rankdir=LR;Inodo0 [
+			label=<
+				<table  border="0" cellborder="1" cellspacing="0">
+				<tr><td colspan="3" port='0'>Inodo0</td></tr><tr><td>I_Uid</td><td port='0'>1</td></tr><tr><td>I_Gid</td><td port='0'>1</td></tr><tr><td>I_perm</td><td port='0'>664</td></tr><tr><td>I_type</td><td port='0'>0</td></tr><tr><td>AD1</td><td port='1'>0</td></tr><tr><td>AD2</td><td port='2'>-1</td></tr><tr><td>AD3</td><td port='3'>-1</td></tr><tr><td>AD4</td><td port='4'>-1</td></tr><tr><td>AD5</td><td port='5'>-1</td></tr><tr><td>AD6</td><td port='6'>-1</td></tr><tr><td>AD7</td><td port='7'>-1</td></tr><tr><td>AD8</td><td port='8'>-1</td></tr><tr><td>AD9</td><td port='9'>-1</td></tr><tr><td>AD10</td><td port='10'>-1</td></tr><tr><td>AD11</td><td port='11'>-1</td></tr><tr><td>AD12</td><td port='12'>-1</td></tr><tr><td>AD13</td><td port='13'>-1</td></tr><tr><td>AD14</td><td port='14'>-1</td></tr><tr><td>AD15</td><td port='15'>-1</td></tr></table>
+			>];
+			
+			Bloque0 [
+						label=<
+						<table  border="0" cellborder="1" cellspacing="0">
+						<tr><td colspan="3" port='0'>Bloque0</td></tr><tr><td>.</td><td port='1'>0</td></tr><tr><td>..</td><td port='2'>0</td></tr><tr><td>user.txt</td><td port='3'>1</td></tr><tr><td></td><td port='4'>-1</td></tr></table>
+						>];	Inodo1 [
+			label=<
+				<table  border="0" cellborder="1" cellspacing="0">
+				<tr><td colspan="3" port='0'>Inodo1</td></tr><tr><td>I_Uid</td><td port='0'>1</td></tr><tr><td>I_Gid</td><td port='0'>1</td></tr><tr><td>I_perm</td><td port='0'>664</td></tr><tr><td>I_type</td><td port='0'>1</td></tr><tr><td>AD1</td><td port='1'>1</td></tr><tr><td>AD2</td><td port='2'>-1</td></tr><tr><td>AD3</td><td port='3'>-1</td></tr><tr><td>AD4</td><td port='4'>-1</td></tr><tr><td>AD5</td><td port='5'>-1</td></tr><tr><td>AD6</td><td port='6'>-1</td></tr><tr><td>AD7</td><td port='7'>-1</td></tr><tr><td>AD8</td><td port='8'>-1</td></tr><tr><td>AD9</td><td port='9'>-1</td></tr><tr><td>AD10</td><td port='10'>-1</td></tr><tr><td>AD11</td><td port='11'>-1</td></tr><tr><td>AD12</td><td port='12'>-1</td></tr><tr><td>AD13</td><td port='13'>-1</td></tr><tr><td>AD14</td><td port='14'>-1</td></tr><tr><td>AD15</td><td port='15'>-1</td></tr></table>
+			>];
+			
+			Bloque1 [
+						label=<
+						<table  border="0" cellborder="1" cellspacing="0">
+						<tr><td colspan="3" port='0'>Bloque1</td></tr><tr><td port='2'>1,G,root
+1,U,root,root,123
+</td></tr></table>
+						>];Inodo0:1:e->Bloque0:0;
+Bloque0:3:e->Inodo1:0;
+Inodo1:1:e->Bloque1:0;
+}

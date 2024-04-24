@@ -14,26 +14,31 @@ import (
 
 //PARA PRIMARIA Y EXTENDIDA SOLO SE VA A USAR EL MBR
 
-func Mkdisk(size int, fit string, unit string, letra string) {
+func Mkdisk(size int, fit string, unit string, letra string) string {
 
-	fmt.Println("\n\n==================================== Iniciando funcion MKDISK ====================================")
+	datos := ""
+
+	//fmt.Println("\n\n==================================== Iniciando funcion MKDISK ====================================")
+	datos += "\n==================================== Iniciando funcion MKDISK ===================================="
 
 	letra = strings.ToUpper(letra)
 
-	fmt.Println("Disco: ", letra, "Size:", size, " Fit: ", fit, " Unit: ", unit)
-
+	//fmt.Println("Disco: ", letra, "Size:", size, " Fit: ", fit, " Unit: ", unit)
+	datos += "\nDisco: " + letra + " Size: " + strconv.Itoa(size) + " Unit: " + unit
 	// validando que el tamano sea mayor que cero
 	if size <= 0 {
-		fmt.Println("Error: El tamano(size) debe ser mayor a cero")
-		return
+		//fmt.Println("Error: El tamano(size) debe ser mayor a cero")
+		datos += "Error: El tamano(size) debe ser mayor a cero"
+		return datos
 	}
 
 	// validando que el ajuste ingresado por el usuario sea el correcto
 
 	if fit != "" {
 		if fit != "bf" && fit != "wf" && fit != "ff" {
-			fmt.Println("Error: Ingrese el ajuste correcto")
-			return
+			//fmt.Println("Error: Ingrese el ajuste correcto")
+			datos += "Error: Ingrese el ajuste correcto"
+			return datos
 		}
 	} else {
 		fit = "ff"
@@ -44,8 +49,9 @@ func Mkdisk(size int, fit string, unit string, letra string) {
 	if unit != "" {
 
 		if unit != "k" && unit != "m" {
-			fmt.Println("Error: La unidad(unit) debe ser k o m")
-			return
+			//fmt.Println("Error: La unidad(unit) debe ser k o m")
+			datos += "Error: La unidad(unit) debe ser k o m"
+			return datos
 		}
 	} else {
 		unit = "m"
@@ -57,7 +63,9 @@ func Mkdisk(size int, fit string, unit string, letra string) {
 	} else if unit == "m" {
 		size = size * 1024 * 1024
 	} else {
-		fmt.Println("La unidad ingresada no es correcta")
+		//fmt.Println("La unidad ingresada no es correcta")
+		datos += "La unidad ingresada no es correcta"
+		return datos
 	}
 
 	// Creando el archivo
@@ -69,7 +77,8 @@ func Mkdisk(size int, fit string, unit string, letra string) {
 	// Open bin file
 	file, err := AbrirArchivo("./archivos/" + letra + ".dsk")
 	if err != nil {
-		return
+		datos += "error al abri el archivo " + letra
+		return datos
 	}
 
 	//Creando el archivo binario con ceros
@@ -91,7 +100,11 @@ func Mkdisk(size int, fit string, unit string, letra string) {
 
 	defer file.Close()
 
-	fmt.Println("\n\n==================================== Fin de funcion MKDISK ====================================")
+	//fmt.Println("\n\n==================================== Fin de funcion MKDISK ====================================")
+
+	datos += "==================================== Fin de funcion MKDISK ===================================="
+
+	return datos
 
 }
 

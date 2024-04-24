@@ -8,7 +8,7 @@ export default function Login() {
   const navigate = useNavigate()
 
   const { disk, particion } = useParams()
-  const {value} = useContext(UserContext)
+  const {value} = useContext(UserContext) //obtiene informacion de value desde otro componente(en particion.jsx)
   
   console.log("La info del id es: ", value)
   let username;
@@ -22,9 +22,9 @@ export default function Login() {
 
 
     let obj = {
-        'Id' : 0,
-        'Comand': "login",
-        'Params': "-user="+ username + " -pass="+ password + " -id=A165"
+        
+        'Comand': "login -user="+ username + " -pass="+ password + " -id="+value
+
     }
 
     fetch(`http://localhost:3000/insert`,{

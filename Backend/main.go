@@ -15,9 +15,19 @@ import (
 )
 
 type Task struct {
-	Id      int    `json:"id"`
 	Command string `json:"comand"`
-	Params  string `json:"params"`
+}
+
+type dataConsola struct {
+	Data string `json:"data"`
+}
+
+type ArrayConsola []dataConsola
+
+var TasksConsola = ArrayConsola{
+	{
+		Data: "",
+	},
 }
 
 type Login struct {
@@ -31,9 +41,7 @@ type Tasks []Task
 
 var TasksData = Tasks{
 	{
-		Id:      1,
 		Command: "Comand",
-		Params:  "params",
 	},
 }
 
@@ -88,6 +96,7 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 	var newTask Task
 	var login Login
 	var sesionArray Sesion
+	var consola dataConsola
 
 	body, err := io.ReadAll(r.Body)
 
@@ -97,14 +106,15 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 
 	json.Unmarshal(body, &newTask)
 
-	input := newTask.Command + " " + newTask.Params
+	input := newTask.Command
 
-	Funciones.Analyze(input) // enviando el comando
+	//fmt.Fprintf(w, "imprimiendo newTask\n%v", input)
 
-	//fmt.Fprintf(w, "Comando enviado con exito\n")
+	data := Funciones.Analyze(input) // enviando el comando
 
-	//newTask.ID = len(TasksData) + 1
-	//TasksData = append(TasksData, newTask)
+	consola.Data = data
+
+	//fmt.Fprintf(w, "\nimprimiendo data consola\n%v", consola)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -118,7 +128,8 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 
 		json.NewEncoder(w).Encode(sesionArray)
 	} else {
-		json.NewEncoder(w).Encode(newTask)
+		//json.NewEncoder(w).Encode(newTask)
+		json.NewEncoder(w).Encode(consola)
 	}
 
 }

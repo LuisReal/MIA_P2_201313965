@@ -35,7 +35,7 @@ func getCommandAndParams(input string) (string, string) {
 	return "", input
 }
 
-func Analyze(input string) {
+func Analyze(input string) string {
 
 	//se valida ejecucion de comando execute
 
@@ -43,14 +43,16 @@ func Analyze(input string) {
 
 	fmt.Println("Command: ", command, "Params: ", params)
 
-	AnalyzeComand(command, params)
+	datos := AnalyzeComand(command, params)
 
+	return datos
 }
 
-func AnalyzeComand(command string, params string) {
+func AnalyzeComand(command string, params string) string {
+	datos := ""
 
 	if command == "mkdisk" {
-		bn_mkdisk(params)
+		datos += bn_mkdisk(params)
 	} else if command == "rmdisk" {
 		bn_rmdisk(params)
 	} else if command == "fdisk" {
@@ -90,6 +92,8 @@ func AnalyzeComand(command string, params string) {
 	} else {
 		fmt.Println("Error: Command not found")
 	}
+
+	return datos
 }
 
 func bn_move(params string) {
@@ -391,7 +395,7 @@ func bn_reportes(params string) {
 	Reportes(*name, *path, *id, *ruta)
 
 }
-func bn_mkdisk(params string) {
+func bn_mkdisk(params string) string {
 
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
@@ -422,16 +426,17 @@ func bn_mkdisk(params string) {
 		default:
 			fmt.Println("Error: Flag not found")
 
-			return
+			return ""
 		}
 	}
 
 	fmt.Println("\n       El valor del contador es: ", contador)
 
 	// Call the function
-	Mkdisk(*size, *fit, *unit, abecedario[contador])
+	datos := Mkdisk(*size, *fit, *unit, abecedario[contador])
 	contador++
 
+	return datos
 }
 
 func bn_rmdisk(params string) {

@@ -47,7 +47,7 @@ function App() {
 
         </div>
 
-        <UserContext.Provider value={{ value, setValue }}>
+        <UserContext.Provider value={{ value, setValue }}>{/*configura un value para ser usado en los siguientes componentes*/ }
             <Routes>
               <Route path="/" element={<Consola/>}></Route>
               <Route path="/diskScreen" element={<Disco/>}></Route>

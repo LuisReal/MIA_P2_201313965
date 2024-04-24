@@ -9,7 +9,7 @@ export default function Partition() {
   const [data, setData] = useState([])
   
   const navigate = useNavigate()
-  const {setValue} = useContext(UserContext)
+  const {setValue} = useContext(UserContext) //guarda el valor configurado en setValue en value(para ser usado en otro componente)
 
   let disco = id.charAt(0);
   
@@ -35,10 +35,8 @@ export default function Partition() {
 
   const onClick = (objIterable) => {
 
-    //console.log("El id es: ",objIterable.id)
-    setValue(objIterable.id)
+    setValue(objIterable.id) // guarda el valor del id
     
-    //console.log("El id es: ",particionID)
     navigate(`/Login/${disco}/${objIterable.name}`)
   }
 
