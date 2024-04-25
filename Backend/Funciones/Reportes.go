@@ -12,27 +12,28 @@ import (
 	"strings"
 )
 
-func Reportes(name string, path string, id string, ruta string) error {
-
+func Reportes(name string, path string, id string, ruta string) (string, error) {
+	datos := ""
 	name = strings.ToLower(name)
 
 	fmt.Println("\n\n========================= Inicio REPORTES ===========================")
+	datos += "\n\n========================= Inicio REPORTES ==========================="
 
 	fmt.Printf("\nName: %s, Path: %s, Id: %s, Ruta: %s\n", name, path, id, ruta)
-
+	datos += "\nName: " + name + " Path: " + path + " Ruta: " + ruta + " Id: " + id + "\n"
 	driveletter := string(id[0])
 
 	// Open bin file
 	filepath := "./archivos/" + strings.ToUpper(driveletter) + ".dsk"
 	file, err := AbrirArchivo(filepath)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	var TempMBR MBR
 	// Read object from bin file
 	if err := LeerObjeto(file, &TempMBR, 0); err != nil {
-		return err
+		return "", err
 	}
 
 	// Print object
@@ -47,7 +48,7 @@ func Reportes(name string, path string, id string, ruta string) error {
 		if TempMBR.Mbr_partitions[i].Part_size != 0 {
 			if strings.Contains(string(TempMBR.Mbr_partitions[i].Part_id[:]), strings.ToUpper(id)) {
 				fmt.Println("\n****Particion Encontrada*****")
-
+				datos += "\n****Particion Encontrada*****"
 				index = i
 			}
 		}
@@ -58,7 +59,8 @@ func Reportes(name string, path string, id string, ruta string) error {
 		fmt.Println()
 	} else {
 		fmt.Println("\n*****Particion NO encontrada******")
-		return nil
+		datos += "\n*****Particion NO encontrada******"
+		return datos, nil
 	}
 
 	//crea las carpetas donde se guardara el archivo
@@ -67,16 +69,19 @@ func Reportes(name string, path string, id string, ruta string) error {
 
 	if err2 != nil {
 		fmt.Println(err2)
-		return err2
+		return "", err2
 	}
 
 	if name == "tree" {
-		ReporteTree(index, path, file, TempMBR, driveletter)
+		data, _ := ReporteTree(index, path, file, TempMBR, driveletter)
+		datos += data
 		//ReporteTree(path, Inode0, file, tempSuperblock, driveletter)
 	} else if name == "mbr" {
-		ReporteMbr(path, file, driveletter)
+		data, _ := ReporteMbr(path, file, driveletter)
+		datos += data
 	} else if name == "disk" {
-		ReporteDisk(path, file, driveletter)
+		data, _ := ReporteDisk(path, file, driveletter)
+		datos += data
 	} else if name == "bm_inode" {
 		ReporteBitmap_inodos(index, path, file, TempMBR, driveletter)
 	} else if name == "bm_block" {
@@ -96,19 +101,21 @@ func Reportes(name string, path string, id string, ruta string) error {
 	//rep -id=191a -path="/home/serchiboi/archivos/reportes/reporte5_bm_inode.txt" -name=bm_inode
 
 	fmt.Println("\n\n========================= Fin REPORTES ===========================")
-
-	return nil
+	datos += "\n\n========================= Fin REPORTES ==========================="
+	return datos, nil
 
 }
 
-func ReporteDisk(path string, file *os.File, disco string) error {
+func ReporteDisk(path string, file *os.File, disco string) (string, error) {
+	datos := ""
 
 	fmt.Println("\n\n========================= Iniciando Reporte DISK ===========================")
+	datos += "\n\n========================= Iniciando Reporte DISK ==========================="
 
 	var TempMBR MBR
 
 	if err := LeerObjeto(file, &TempMBR, int64(0)); err != nil {
-		return err
+		return "", err
 	}
 
 	PrintMBR(TempMBR)
@@ -208,7 +215,7 @@ func ReporteDisk(path string, file *os.File, disco string) error {
 				var tempEBR EBR
 
 				if err := LeerObjeto(file, &tempEBR, int64(inicio)); err != nil { // obtiene el primer ebr
-					return err
+					return "", err
 				}
 
 				tamano_ebr := float64(binary.Size(tempEBR))
@@ -254,7 +261,7 @@ func ReporteDisk(path string, file *os.File, disco string) error {
 					grafo += `EBR|`
 
 					if err := LeerObjeto(file, &tempEBR, int64(part_next)); err != nil { // obtiene el primer ebr
-						return err
+						return "", err
 					}
 
 					tam_tot_logicas += int32(binary.Size(EBR{}))
@@ -341,7 +348,7 @@ func ReporteDisk(path string, file *os.File, disco string) error {
 
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return "", err
 	}
 
 	file_dot.WriteString(grafo)
@@ -361,24 +368,27 @@ func ReporteDisk(path string, file *os.File, disco string) error {
 	fmt.Println(string(out))
 
 	fmt.Println("\n\n========================= Finalizando Reporte DISK ===========================")
-
-	return nil
+	datos += "\n\n========================= Finalizando Reporte DISK ==========================="
+	return datos, nil
 
 }
 
-func ReporteMbr(path string, file *os.File, disco string) error {
+func ReporteMbr(path string, file *os.File, disco string) (string, error) {
+	datos := ""
 
 	fmt.Println("\n\n========================= Iniciando Reporte MBR ===========================")
+	datos += "\n\n========================= Iniciando Reporte MBR ==========================="
+
 	fmt.Printf("\npath: %s", path)
 	fmt.Println()
 
 	var TempMBR MBR
 
 	if err := LeerObjeto(file, &TempMBR, int64(0)); err != nil {
-		return err
+		return "", err
 	}
 
-	PrintMBR(TempMBR)
+	datos += PrintMBR(TempMBR)
 
 	grafo := `digraph H {
 			labelloc="t";
@@ -479,6 +489,7 @@ func ReporteMbr(path string, file *os.File, disco string) error {
 	<table  border="0" cellborder="1" cellspacing="0">`*/
 
 	fmt.Println("\nCreando REPORTE EBR")
+	datos += "\nCreando REPORTE EBR"
 	var cont int
 	for j := 0; j < 4; j++ {
 
@@ -495,7 +506,7 @@ func ReporteMbr(path string, file *os.File, disco string) error {
 			var tempEBR EBR
 
 			if err := LeerObjeto(file, &tempEBR, int64(inicio)); err != nil { // obtiene el primer ebr
-				return err
+				return "", err
 			}
 
 			cont++
@@ -540,7 +551,7 @@ func ReporteMbr(path string, file *os.File, disco string) error {
 			for part_next != 0 { // obtiene los siguientes EBR analizando si existen por medio de su tamano
 
 				if err := LeerObjeto(file, &tempEBR, int64(part_next)); err != nil { // obtiene el primer ebr
-					return err
+					return "", err
 				}
 
 				if tempEBR.Part_size != 0 {
@@ -604,7 +615,7 @@ func ReporteMbr(path string, file *os.File, disco string) error {
 
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return "", err
 	}
 
 	file_dot.WriteString(grafo)
@@ -621,24 +632,26 @@ func ReporteMbr(path string, file *os.File, disco string) error {
 
 	if err != nil {
 		fmt.Println("\n Imprimiendo el error en ReportesMBR y EBR")
+		datos += "\n Imprimiendo el error en ReportesMBR y EBR"
 		log.Fatal(err)
 	}
 
 	fmt.Println(string(out))
 
 	fmt.Println("\n\n========================= Finalizando Reporte MBR ===========================")
-
-	return nil
+	datos += "\n\n========================= Finalizando Reporte MBR ==========================="
+	return datos, nil
 }
 
-func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco string) error {
-
+func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco string) (string, error) {
+	datos := ""
 	fmt.Println("\n\n========================= Iniciando Reporte Tree ===========================")
+	datos += "\n\n========================= Iniciando Reporte Tree ==========================="
 
 	var tempSuperblock Superblock
 
 	if err := LeerObjeto(file, &tempSuperblock, int64(TempMBR.Mbr_partitions[index].Part_start)); err != nil {
-		return err
+		return "", err
 	}
 
 	Inodo_start := tempSuperblock.S_inode_start
@@ -662,7 +675,7 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 	for i := 0; i < int(inodos_ocupados); i++ {
 		//fmt.Println("\nEstoy dentro del for de inodos")
 		if err := LeerObjeto(file, &inodo, int64(Inodo_start+int32(i)*int32(binary.Size(Inode{})))); err != nil {
-			return err
+			return "", err
 		}
 
 		/*for i := int32(0); i < 15; i++ {
@@ -717,7 +730,7 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 
 						//fmt.Println("\nEstoy dentro del for de inodos")
 						if err := LeerObjeto(file, &folder, int64(tempSuperblock.S_block_start+bloque*int32(binary.Size(Folderblock{})))); err != nil {
-							return err
+							return "", err
 						}
 
 						grafo += `Bloque` + strconv.Itoa(int(bloque)) + ` [
@@ -752,7 +765,7 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 
 						//fmt.Println("\nEstoy dentro del for de inodos")
 						if err := LeerObjeto(file, &file_block, int64(tempSuperblock.S_block_start+int32(bloque)*int32(binary.Size(Fileblock{})))); err != nil {
-							return err
+							return "", err
 						}
 
 						grafo += `Bloque` + strconv.Itoa(int(bloque)) + ` [
@@ -793,7 +806,7 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 						var newPointerBlock Pointerblock
 
 						if err := LeerObjeto(file, &newPointerBlock, int64(tempSuperblock.S_block_start+int32(bloque)*int32(binary.Size(Pointerblock{})))); err != nil {
-							return err
+							return "", err
 						}
 
 						//execute -path=/home/darkun/Escritorio/prueba.mia
@@ -819,7 +832,7 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 
 								//fmt.Println("\nEstoy dentro del for de inodos")
 								if err := LeerObjeto(file, &file_block, int64(tempSuperblock.S_block_start+int32(bloque)*int32(binary.Size(Fileblock{})))); err != nil {
-									return err
+									return "", err
 								}
 
 								grafo += `Bloque` + strconv.Itoa(int(bloque)) + ` [
@@ -859,7 +872,7 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 						var newPointerBlock1 Pointerblock
 
 						if err := LeerObjeto(file, &newPointerBlock1, int64(tempSuperblock.S_block_start+int32(bloque)*int32(binary.Size(Pointerblock{})))); err != nil {
-							return err
+							return "", err
 						}
 
 						//execute -path=/home/darkun/Escritorio/prueba.mia
@@ -885,7 +898,7 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 
 								//fmt.Println("\nEstoy dentro del for de inodos")
 								if err := LeerObjeto(file, &newPointerBlock2, int64(tempSuperblock.S_block_start+int32(bloque)*int32(binary.Size(Pointerblock{})))); err != nil {
-									return err
+									return "", err
 								}
 
 								grafo += `Bloque` + strconv.Itoa(int(bloque)) + ` [
@@ -909,7 +922,7 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 
 										//fmt.Println("\nEstoy dentro del for de inodos")
 										if err := LeerObjeto(file, &file_block, int64(tempSuperblock.S_block_start+int32(bloque)*int32(binary.Size(Fileblock{})))); err != nil {
-											return err
+											return "", err
 										}
 
 										grafo += `Bloque` + strconv.Itoa(int(bloque)) + ` [
@@ -959,7 +972,7 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 	var Inode0 Inode
 
 	if err := LeerObjeto(file, &Inode0, int64(tempSuperblock.S_inode_start)); err != nil {
-		return err
+		return "", err
 	}
 
 	grafo, _ = EnlazandoNodos(path, Inode0, file, tempSuperblock, disco, grafo, 0) //enlazando los nodos
@@ -970,12 +983,13 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 	dot := "tree.dot"
 
 	fmt.Println("\n Creando archivo tree.dot")
+	datos += "\n Creando archivo tree.dot"
 
 	file_dot, err := os.Create(dot)
 
 	if err != nil {
 		fmt.Println(err)
-		return err
+		return "", err
 	}
 
 	file_dot.WriteString(grafo)
@@ -995,8 +1009,8 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 	fmt.Println(string(out))
 
 	fmt.Println("\n\n========================= Finalizando Reporte Tree ===========================")
-
-	return nil
+	datos += "\n\n========================= Finalizando Reporte Tree ==========================="
+	return datos, nil
 }
 
 func EnlazandoNodos(path string, Inodo Inode, file *os.File, tempSuperblock Superblock, disco string, grafo string, Inodo_actual int32) (string, error) {

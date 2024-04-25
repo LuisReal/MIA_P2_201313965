@@ -8,52 +8,62 @@ import (
 	"strings"
 )
 
-func Login(user string, pass string, id string) error {
-	fmt.Println("\n\n========================= LOGIN ===========================")
+func Login(user string, pass string, id string) (string, error) {
+	data := ""
+	//fmt.Println("\n\n========================= LOGIN ===========================")
+	data += "\n\n========================= LOGIN ==========================="
 
 	if User_.Nombre == user {
-		fmt.Println("\n\n ******* ERROR: El usuario ya esta logueado *******")
+		//fmt.Println("\n\n ******* ERROR: El usuario ya esta logueado *******")
+		data += "\n\n ******* ERROR: El usuario ya esta logueado *******"
 
-		fmt.Println("\n\n========================= FIN LOGIN ===========================")
-		return nil
+		//fmt.Println("\n\n========================= FIN LOGIN ===========================")
+		data += "\n\n========================= FIN LOGIN ==========================="
+		return data, nil
 	}
 
 	id = strings.ToUpper(id)
 	driveletter := string(id[0])
 
-	fmt.Printf("\nUser: %s, pass: %s, id: %s\n", user, pass, id)
+	//fmt.Printf("\nUser: %s, pass: %s, id: %s\n", user, pass, id)
 
 	// Open bin file
 	filepath := "./archivos/" + strings.ToUpper(driveletter) + ".dsk"
 	file, err := AbrirArchivo(filepath)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	var TempMBR MBR
 	// Read object from bin file
 	if err := LeerObjeto(file, &TempMBR, 0); err != nil {
-		return err
+		return "", err
 	}
 
 	// Print object
-	fmt.Println("\n***********Imprimiendo MBR")
-	fmt.Println()
-	PrintMBR(TempMBR)
-	fmt.Println("\n********Finalizando Impresion de MBR")
+	//fmt.Println("\n***********Imprimiendo MBR")
+	data += "\n***********Imprimiendo MBR"
+	//fmt.Println()
+	data += PrintMBR(TempMBR)
+	//fmt.Println("\n********Finalizando Impresion de MBR")
+	data += "\n********Finalizando Impresion de MBR"
 
 	var index int = -1
 	// Iterate over the partitions
 	for i := 0; i < 4; i++ {
 		if TempMBR.Mbr_partitions[i].Part_size != 0 {
 			if strings.Contains(string(TempMBR.Mbr_partitions[i].Part_id[:]), id) {
-				fmt.Println("\n****Particion Encontrada*****")
+				//fmt.Println("\n****Particion Encontrada*****")
+				data += "\n****Particion Encontrada*****"
+
 				if TempMBR.Mbr_partitions[i].Part_status { // si la particion esta montada = true
-					fmt.Println("\n*******La particion esta montada*****")
+					//fmt.Println("\n*******La particion esta montada*****")
+					data += "\n*******La particion esta montada*****"
 					index = i
 				} else {
-					fmt.Println("\n*******La particion NO esta montada*****")
-					return nil
+					//fmt.Println("\n*******La particion NO esta montada*****")
+					data += "\n*******La particion NO esta montada*****"
+					return data, nil
 				}
 				break
 			}
@@ -64,14 +74,15 @@ func Login(user string, pass string, id string) error {
 		ImprimirParticion(TempMBR.Mbr_partitions[index])
 		fmt.Println()
 	} else {
-		fmt.Println("\n*****Particion NO encontrada******")
-		return err
+		//fmt.Println("\n*****Particion NO encontrada******")
+		data += "\n*****Particion NO encontrada******"
+		return data, err
 	}
 
 	var tempSuperblock Superblock
 
 	if err := LeerObjeto(file, &tempSuperblock, int64(TempMBR.Mbr_partitions[index].Part_start)); err != nil {
-		return err
+		return "", err
 	}
 
 	// initSearch /user.txt -> regresa no Inodo
@@ -79,12 +90,12 @@ func Login(user string, pass string, id string) error {
 
 	indexInode := InitSearch("/user.txt", file, tempSuperblock) // devuelve el valor = 1 que se usara para encontrar el inodo 1
 
-	fmt.Println("\nindexInode el valor que devuelve InitSearch: ", indexInode)
+	//fmt.Println("\nindexInode el valor que devuelve InitSearch: ", indexInode)
 
 	var crrInode Inode //Inodo 1
 
 	if err := LeerObjeto(file, &crrInode, int64(tempSuperblock.S_inode_start+indexInode*int32(binary.Size(Inode{})))); err != nil {
-		return err
+		return "", err
 	}
 
 	var bloque int
@@ -103,15 +114,16 @@ func Login(user string, pass string, id string) error {
 			fileblock_start = tempSuperblock.S_block_start + int32(bloque)*int32(binary.Size(Fileblock{}))
 
 			if err := LeerObjeto(file, &fileblock, int64(fileblock_start)); err != nil { //bloque1
-				return err
+				return "", err
 			}
 
 			cadena += string(fileblock.B_content[:])
 
 		}
 	}
-	fmt.Printf("\nel ultimo bloque creado es: %d, index: %d", bloque, indice)
-	fmt.Println()
+	//fmt.Printf("\nel ultimo bloque creado es: %d, index: %d", bloque, indice)
+	data += "\nel ultimo bloque creado es: " + strconv.Itoa(bloque) + " index: " + strconv.Itoa(indice)
+	//fmt.Println()
 
 	// getInodeFileData -> Iterate the I_Block n concat the data
 	/*
@@ -123,9 +135,11 @@ func Login(user string, pass string, id string) error {
 			return err
 		}*/
 
-	fmt.Println("Fileblock------------")
+	//fmt.Println("\nFileblock------------")
+	data += "\nFileblock------------"
 	//data := "1,G,root\n1,U,root,root,123\n"
-	fmt.Println("\n Imprimiendo cadena\n", cadena)
+	//fmt.Println("\n Imprimiendo cadena\n", cadena)
+	data += "\n Imprimiendo cadena\n" + cadena
 
 	lines := strings.Split(cadena, "\n")
 
@@ -158,11 +172,16 @@ func Login(user string, pass string, id string) error {
 				User_.Gid, _ = SearchByUser(datos[2], crrInode, file, tempSuperblock)
 				User_.Uid = strconv.Itoa(user_id)
 
-				fmt.Println("\nUsuario: ", User_.Nombre, " ID Particion: ", User_.Id, " Group ID: ", User_.Gid, " User ID: ", User_.Uid)
+				//fmt.Println("\nUsuario: ", User_.Nombre, " ID Particion: ", User_.Id, " Group ID: ", User_.Gid, " User ID: ", User_.Uid)
+				data += "\nUsuario: " + User_.Nombre + " ID Particion: " + User_.Id + " Group ID: " + User_.Gid + " User ID: " + User_.Uid
 
-				fmt.Println("\n **********Usuario encontrado***********")
+				//fmt.Println("\n **********Usuario encontrado***********")
 
-				fmt.Println("\n\n========================= FIN LOGIN ===========================")
+				data += "\n **********Usuario encontrado***********"
+
+				//fmt.Println("\n\n========================= FIN LOGIN ===========================")
+
+				data += "\n\n========================= FIN LOGIN ==========================="
 
 				exist++
 
@@ -175,16 +194,17 @@ func Login(user string, pass string, id string) error {
 
 	if exist == 0 {
 
-		fmt.Println("\n*********Usuario NO encontrado**********")
+		//fmt.Println("\n*********Usuario NO encontrado**********")
+		data += "\n*********Usuario NO encontrado**********"
 
-		fmt.Println("\n\n========================= FIN LOGIN ===========================")
-
-		return nil
+		//fmt.Println("\n\n========================= FIN LOGIN ===========================")
+		data += "\n\n========================= FIN LOGIN ==========================="
+		return data, nil
 	}
 
 	defer file.Close()
 
-	return nil
+	return data, nil
 
 }
 

@@ -10,7 +10,11 @@ function Consola() {
         }
     )
 
-    const [showData, setData] = useState("")
+    const [showData, setData] = useState(
+        {
+            info: ''
+        }
+    )
 
     const getDatos = (event) => {
         event.preventDefault();
@@ -42,31 +46,25 @@ function Consola() {
         }).then(response => response.json()
         ).catch(err =>{
             console.error(err)
-        }).then(data =>{
+        }).then(res =>{
            
-           setData(JSON.stringify(data.data))
+           setData(
+            {info: res.data}
+        )
              
         })
-
-        /*
-        var value = document.getElementById('consola').value;
-
-        value = value.replace(/\n/g, "<br>");*/
         
     }
 
-    
 
-    var value = showData.replace(/\n/g, "<br>");
-
-    document.getElementById("consola").innerHtml = value;
+   
 
     return (
         <>
             <div style={{position:"relative",  marginLeft:280, border:"1px solid blue", height:500}}>
 
                 <form action="" onSubmit={mostrarDatos}>
-                    <p id="consola" style={{whiteSpace: "pre-wrap", height:450, width:1580, border:"3px solid black", position:"absolute"}}  ></p>
+                    <p style={{whiteSpace: "pre-line", height:450, width:1550, border:"3px solid black", position:"absolute"}}  >{showData.info}</p>
 
                     <input type="text" onChange={getDatos} name="comando" style={{height:50, width:1480, position:"absolute", marginTop:450}} placeholder="Ingrese comando" />
                     <button type="submit" className='btn btn-primary' style={{height:50, position:"absolute", marginLeft:1480, marginTop:450}}>Enviar</button>

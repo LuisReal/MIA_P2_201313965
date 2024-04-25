@@ -15,19 +15,23 @@ var size_ int
 
 var exp = regexp.MustCompile(`(\w+)\.(\w+)`) // para analizar archivos con extension
 
-func Mkfile(path string, r string, size int, cont string) error {
+func Mkfile(path string, r string, size int, cont string) (string, error) {
+	datos := ""
+	//fmt.Println("\n\n=========================Creando Archivo (MKFILE)===========================")
+	datos += "\n\n=========================Creando Archivo (MKFILE)==========================="
 
-	fmt.Println("\n\n=========================Creando Archivo (MKFILE)===========================")
-
-	fmt.Println("\n**********************El path ingresado es: ", path)
+	//fmt.Println("\n**********************El path ingresado es: ", path)
+	datos += "\n**********************El path ingresado es: " + path
 
 	//fmt.Println("\nUsuario con sesion actual: ", user_.Nombre, " ID: ", user_.Id, " r: ", r)
 
 	if size < 0 {
-		fmt.Println("\n\n            ERROR: El tamano size no puede ser negativo")
+		//fmt.Println("\n\n            ERROR: El tamano size no puede ser negativo")
+		datos += "\n\n            ERROR: El tamano size no puede ser negativo"
 
-		fmt.Println("\n\n=======================Finalizando Creacion Archivo (MKFILE)===========================")
-		return nil
+		//fmt.Println("\n\n=======================Finalizando Creacion Archivo (MKFILE)===========================")
+		datos += "\n\n=======================Finalizando Creacion Archivo (MKFILE)==========================="
+		return datos, nil
 	}
 
 	size_ = size
@@ -42,13 +46,13 @@ func Mkfile(path string, r string, size int, cont string) error {
 	filepath := "./archivos/" + strings.ToUpper(driveletter) + ".dsk"
 	file, err := AbrirArchivo(filepath)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	var TempMBR MBR
 	// Read object from bin file
 	if err := LeerObjeto(file, &TempMBR, 0); err != nil {
-		return err
+		return "", err
 	}
 
 	// Print object
@@ -74,7 +78,7 @@ func Mkfile(path string, r string, size int, cont string) error {
 	superblock_start := TempMBR.Mbr_partitions[index].Part_start
 
 	if err := LeerObjeto(file, &tempSuperblock, int64(superblock_start)); err != nil {
-		return err
+		return "", err
 	}
 
 	carpetas := strings.Split(path, "/") // solo hay una carpeta que se creara en la raiz
@@ -83,12 +87,13 @@ func Mkfile(path string, r string, size int, cont string) error {
 
 	if tempSuperblock.S_filesystem_type == 3 {
 
-		fmt.Println("Registrando operacion al JOURNALING")
+		//fmt.Println("Registrando operacion al JOURNALING")
+		datos += "Registrando operacion al JOURNALING"
 
 		var journaling Journaling
 
 		if err := LeerObjeto(file, &journaling, int64(superblock_start+int32(binary.Size(Superblock{})))); err != nil {
-			return err
+			return "", err
 		}
 
 		for k := 0; k < len(journaling.Contenido); k++ {
@@ -129,7 +134,7 @@ func Mkfile(path string, r string, size int, cont string) error {
 	var inodo0 Inode
 
 	if err := LeerObjeto(file, &inodo0, int64(Inodo_start)); err != nil {
-		return err
+		return "", err
 	}
 
 	//mkfile -path=/home/archivos/user/docs/Tarea.txt -size=75
@@ -139,26 +144,29 @@ func Mkfile(path string, r string, size int, cont string) error {
 	duplicado := DuplicateElement(carpetas)
 
 	if duplicado != "-1" {
-		fmt.Println("\n      ********** ERROR: recursivo *********")
-		return nil
+		//fmt.Println("\n      ********** ERROR: recursivo *********")
+		datos += "\n      ********** ERROR: recursivo *********"
+		return datos, nil
 	}
 
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
-	fmt.Println("\nEl arreglo carpetas es: \n", carpetas)
-	fmt.Println("\nEl tamano del arreglo carpetas es: \n", len(carpetas))
+	//fmt.Println("\nEl arreglo carpetas es: \n", carpetas)
+
+	//fmt.Println("\nEl tamano del arreglo carpetas es: \n", len(carpetas))
 
 	fmt.Println("\nEl parametro -r es: ", r)
+	datos += "\nEl parametro -r es: " + r
 
 	var cont_folder int
 
 	AddingNewFile(carpetas, inodo0, file, tempSuperblock, -1, superblock_start, cont_folder, cont, r)
 
-	fmt.Println("\n\n=======================Finalizando Creacion Archivo (MKFILE)===========================")
-
+	//fmt.Println("\n\n=======================Finalizando Creacion Archivo (MKFILE)===========================")
+	datos += "\n\n=======================Finalizando Creacion Archivo (MKFILE)==========================="
 	file.Close()
 
-	return nil
+	return datos, nil
 }
 
 func DuplicateElement(arr []string) string {
@@ -173,22 +181,25 @@ func DuplicateElement(arr []string) string {
 	return "-1"
 }
 
-func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock Superblock, Inodo_actual int32, superblock_start int32, cont_folder int, cont string, r string) error {
-
+func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock Superblock, Inodo_actual int32, superblock_start int32, cont_folder int, cont string, r string) (string, error) {
+	datos := ""
 	//mkfile -path=/home/archivos/user/docs/Tarea.txt -size=75
 
-	fmt.Println("\n\n========================= Iniciando AddingNewFile ===========================")
+	//fmt.Println("\n\n========================= Iniciando AddingNewFile ===========================")
+	datos += "\n\n========================= Iniciando AddingNewFile ==========================="
 
-	fmt.Println("\nEl valor de cont_folder es: ", cont_folder)
+	//fmt.Println("\nEl valor de cont_folder es: ", cont_folder)
 
 	if cont_folder == len(carpeta) {
-		fmt.Println("\n return : debido a que cont_folder es igual que la longitud de la carpeta arrreglos")
-		return nil
+		//fmt.Println("\n return : debido a que cont_folder es igual que la longitud de la carpeta arrreglos")
+		datos += "\n return : debido a que cont_folder es igual que la longitud de la carpeta arrreglos"
+		return datos, nil
 	}
 
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
-	fmt.Println("\nLeyendo Carpeta: ", carpeta[cont_folder])
+	//fmt.Println("\nLeyendo Carpeta: ", carpeta[cont_folder])
+	datos += "\nLeyendo Carpeta: " + carpeta[cont_folder]
 
 	//fmt.Println("El tipo de inodo es: ", string(Inodo.I_type[:]))
 
@@ -212,7 +223,7 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 					//grafo += `Bloque` + strconv.Itoa(int(block)) + `:0;` + "\n"
 					// Read object from bin file                                       // un Inodo y un bloque las estructuras miden lo mismo
 					if err := LeerObjeto(file, &crrFolderBlock, int64(tempSuperblock.S_block_start+block*int32(binary.Size(Folderblock{})))); err != nil {
-						return err
+						return "", err
 					}
 
 					var exist_folder int
@@ -223,22 +234,23 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 
 						if string(folder.B_name[:]) == string(folder_bytes[:]) {
 
-							fmt.Println("\nLa carpeta "+carpeta[cont_folder]+" si existe en el bloque: ", block)
+							//fmt.Println("\nLa carpeta "+carpeta[cont_folder]+" si existe en el bloque: ", block)
+							datos += "\nLa carpeta " + carpeta[cont_folder] + " si existe en el bloque: " + strconv.Itoa(int(block))
 
-							fmt.Println("\n ======= NextInode ======")
+							//fmt.Println("\n ======= NextInode ======")
+							datos += "\n ======= NextInode ======"
 							var NextInode Inode
 							// Read object from bin file
 							if err := LeerObjeto(file, &NextInode, int64(tempSuperblock.S_inode_start+folder.B_inodo*int32(binary.Size(Inode{})))); err != nil {
-								return err
+								return "", err
 							}
 
-							fmt.Println("Enviando el INODO: " + strconv.Itoa(int(folder.B_inodo)))
+							//fmt.Println("Enviando el INODO: " + strconv.Itoa(int(folder.B_inodo)))
+							datos += "Enviando el INODO: " + strconv.Itoa(int(folder.B_inodo))
 							//grafo, _ = EnlazandoNodos(path, NextInode, file, tempSuperblock, disco, grafo, folder.B_inodo)
 							exist_folder++
 
-							AddingNewFile(carpeta, NextInode, file, tempSuperblock, folder.B_inodo, superblock_start, cont_folder+1, cont, r)
-
-							return nil
+							return AddingNewFile(carpeta, NextInode, file, tempSuperblock, folder.B_inodo, superblock_start, cont_folder+1, cont, r)
 
 						}
 
@@ -260,8 +272,10 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 						if r == "0" {
 
 							if folder.B_inodo == -1 && Extension != "" {
-								fmt.Println("\nEl parametro r NO esta incluido, llamando a funcion VerificaTipoArchivo")
-								fmt.Println("\nEl bloque actual es: ", block)
+								//fmt.Println("\nEl parametro r NO esta incluido, llamando a funcion VerificaTipoArchivo")
+								datos += "\nEl parametro r NO esta incluido, llamando a funcion VerificaTipoArchivo"
+								//fmt.Println("\nEl bloque actual es: ", block)
+								datos += "\nEl bloque actual es: " + strconv.Itoa(int(block))
 
 								VerificaTipoArchivo(carpeta, cont_folder, &crrFolderBlock, tempSuperblock, file, block, cont, superblock_start, k)
 
@@ -271,7 +285,7 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 									fmt.Println("Error: ", err)
 								}
 
-								return nil
+								return datos, nil
 
 							}
 
@@ -279,7 +293,8 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 
 							if folder.B_inodo == -1 && Extension != "" {
 
-								fmt.Println("\nEl parametro r SI esta incluido, llamando a funcion VerificaTipoArchivo")
+								//fmt.Println("\nEl parametro r SI esta incluido, llamando a funcion VerificaTipoArchivo")
+								datos += "\nEl parametro r SI esta incluido, llamando a funcion VerificaTipoArchivo"
 
 								VerificaTipoArchivo(carpeta, cont_folder, &crrFolderBlock, tempSuperblock, file, block, cont, superblock_start, k)
 
@@ -289,15 +304,17 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 									fmt.Println("Error: ", err)
 								}
 
-								return nil
+								return datos, nil
 
 							} else { //si es una carpeta
 
-								fmt.Println("\nIngresando la carpeta " + carpeta[cont_folder] + " en el bloque " + strconv.Itoa(int(block)))
+								//fmt.Println("\nIngresando la carpeta " + carpeta[cont_folder] + " en el bloque " + strconv.Itoa(int(block)))
+								datos += "\nIngresando la carpeta " + carpeta[cont_folder] + " en el bloque " + strconv.Itoa(int(block))
 
 								inodo := tempSuperblock.S_inodes_count - tempSuperblock.S_free_inodes_count
 
-								fmt.Println("\nEl valor de inodo es: ", inodo)
+								//fmt.Println("\nEl valor de inodo es: ", inodo)
+								datos += "\nEl valor de inodo es: " + strconv.Itoa(int(inodo))
 
 								crrFolderBlock.B_content[k].B_inodo = inodo
 
@@ -329,7 +346,8 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 									newInode.I_block[i] = -1 //-1 no han sido utilizados
 								}
 
-								fmt.Println("\nEl valor de numBlocks es: ", numBlocks)
+								//fmt.Println("\nEl valor de numBlocks es: ", numBlocks)
+								datos += "\nEl valor de numBlocks es: " + strconv.Itoa(int(numBlocks))
 
 								newInode.I_block[0] = numBlocks
 
@@ -381,16 +399,15 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 									fmt.Println("Error: ", err)
 								}
 
-								fmt.Println("\n ======= NextInode ======")
+								//fmt.Println("\n ======= NextInode ======")
+								datos += "\n ======= NextInode ======"
 								var NextInode Inode
 								// Read object from bin file
 								if err := LeerObjeto(file, &NextInode, int64(tempSuperblock.S_inode_start+inodo*int32(binary.Size(Inode{})))); err != nil {
-									return err
+									return "", err
 								}
 
-								AddingNewFile(carpeta, NextInode, file, tempSuperblock, inodo, superblock_start, cont_folder+1, cont, r)
-
-								return nil
+								return AddingNewFile(carpeta, NextInode, file, tempSuperblock, inodo, superblock_start, cont_folder+1, cont, r)
 							}
 						}
 
@@ -409,7 +426,8 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 
 				//execute -path=/home/darkun/Escritorio/prueba.mia
 
-				fmt.Println("\n ********** CASO INDIRECTO ************ ")
+				//fmt.Println("\n ********** CASO INDIRECTO ************ ")
+				datos += "\n ********** CASO INDIRECTO ************"
 
 			}
 
@@ -418,6 +436,9 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 			///home/archivos/user/docs/Tarea.txt
 
 			fmt.Println("\nLeyendo el siguiente bloque " + strconv.Itoa(int(block)) + " vacio del inodo")
+
+			datos += "\nLeyendo el siguiente bloque " + strconv.Itoa(int(block)) + " vacio del inodo"
+
 			fmt.Println("El indice J del bloque en el inodo es: ", j)
 			fmt.Println("El cont_folder es: ", cont_folder)
 
@@ -444,6 +465,8 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 
 				fmt.Println("\nEl valor de Inodo actual es: ", Inodo_actual)
 				fmt.Println("\nEl Inodo "+strconv.Itoa(int(Inodo_actual))+" en su posicion "+strconv.Itoa(j)+" apunta al bloque : ", Inodo.I_block[j])
+
+				datos += "\nEl Inodo " + strconv.Itoa(int(Inodo_actual)) + " en su posicion " + strconv.Itoa(j) + " apunta al bloque : " + strconv.Itoa(int(Inodo.I_block[j]))
 
 				// escribiendo blocks
 				err := EscribirObjeto(file, &Inodo, int64(tempSuperblock.S_inode_start+Inodo_actual*int32(binary.Size(Inode{})))) //Bloque 0
@@ -505,7 +528,8 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 				//fmt.Println("\nEl numero de bloques ocupados es: ", numBlocks)
 
 				newInode.I_block[0] = numBlocks
-				fmt.Println("\nEl nuevo numero de bloque es: ", newInode.I_block[0])
+				//fmt.Println("\nEl nuevo numero de bloque es: ", newInode.I_block[0])
+				datos += "\nEl nuevo numero de bloque es: " + strconv.Itoa(int(newInode.I_block[0]))
 
 				err = EscribirObjeto(file, newInode, int64(tempSuperblock.S_inode_start+inodos_ocupados*int32(binary.Size(Inode{}))))
 				if err != nil {
@@ -533,7 +557,9 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 
 					if err != nil {
 						fmt.Println("Error al abrir el archivo:", err)
-						return err
+
+						datos += "Error al abrir el archivo"
+						return datos, err
 					}
 
 					scanner := bufio.NewScanner(archivo_)
@@ -609,8 +635,9 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 				}
 
 				fmt.Println("\n\n ****Escribiendo objeto FILEBLOCK en el archivo *****")
+				datos += "\n\n ****Escribiendo objeto FILEBLOCK en el archivo *****"
 				if err := EscribirObjeto(file, newFile, int64(tempSuperblock.S_block_start+numBlocks*int32(binary.Size(Fileblock{})))); err != nil { //aqui solo escribi el primer EBR
-					return err
+					return "", err
 				}
 
 				// Escribiendo en bitmap de bloques
@@ -630,7 +657,9 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 
 					fmt.Println("\n Todavia sobra espacio despues de escribir la cadena en el slice")
 
-					return nil
+					datos += "\n Todavia sobra espacio despues de escribir la cadena en el slice"
+
+					return datos, nil
 
 				} else { // si ya no hay espacios en el slice para ingresar la cadena
 
@@ -639,7 +668,10 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 					if len(newCadena[c:]) != 0 { //si todavia hay caracteres en newCadena para seguir ingresando en slice de fileblock.Bcontent
 
 						fmt.Println("\n Enviando cadena:\n", newCadena)
+						datos += "\n Enviando cadena:\n" + newCadena
+
 						fmt.Println("\nEnviando c: ", c, " Enviando inodos: ", inodos_ocupados)
+						datos += "\nEnviando c: " + strconv.Itoa(c) + " Enviando inodos: " + strconv.Itoa(int(inodos_ocupados))
 						CreateNewBlock(newCadena, c, newInode, inodos_ocupados, &tempSuperblock, file, superblock_start)
 
 						// escribiendo y actualizando el superblock
@@ -652,7 +684,9 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 
 						fmt.Println("\nEl nuevo numero de bloques ocupados es(despues de createnewblock): ", numBlocks)
 
-						return nil
+						datos += "\nEl nuevo numero de bloques ocupados es(despues de createnewblock): " + strconv.Itoa(int(numBlocks))
+
+						return datos, nil
 					}
 
 				}
@@ -660,16 +694,19 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 
 				if r != "0" { // el parametro r esta incluido
 
-					fmt.Println("Creando la carpeta")
+					//fmt.Println("Creando la carpeta")
 					fmt.Println("*******La carpeta a ingresar es: ", carpeta[cont_folder])
+					datos += "*******La carpeta a ingresar es: " + carpeta[cont_folder]
 
 					newBlock := tempSuperblock.S_blocks_count - tempSuperblock.S_free_blocks_count
 					Inodo.I_block[j] = int32(newBlock)
 					//fmt.Println("\nEl nuevo bloque es: ", Inodo.I_block[j])
 
 					fmt.Println("\nEl valor de Inodo actual es: ", Inodo_actual)
-					fmt.Println("\nEl Inodo "+strconv.Itoa(int(Inodo_actual))+" en su posicion "+strconv.Itoa(j)+" apunta al bloque : ", Inodo.I_block[j])
+					datos += "\nEl valor de Inodo actual es: " + strconv.Itoa(int(Inodo_actual))
 
+					fmt.Println("\nEl Inodo "+strconv.Itoa(int(Inodo_actual))+" en su posicion "+strconv.Itoa(j)+" apunta al bloque : ", Inodo.I_block[j])
+					datos += "\nEl Inodo " + strconv.Itoa(int(Inodo_actual)) + " en su posicion " + strconv.Itoa(j) + " apunta al bloque : " + strconv.Itoa(int(Inodo.I_block[j]))
 					// escribiendo blocks
 					err := EscribirObjeto(file, &Inodo, int64(tempSuperblock.S_inode_start+Inodo_actual*int32(binary.Size(Inode{})))) //Bloque 0
 					if err != nil {
@@ -722,6 +759,7 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 
 					newInode.I_block[0] = numBlocks
 					fmt.Println("\nEl nuevo numero de bloque es: ", newInode.I_block[0])
+					datos += "\nEl nuevo numero de bloque es: " + strconv.Itoa(int(newInode.I_block[0]))
 
 					copy(newInode.I_type[:], "0")
 					copy(newInode.I_perm[:], "664")
@@ -776,18 +814,19 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 					}
 
 					fmt.Println("\n ======= NextInode ======")
+					datos += "\n ======= NextInode ======"
 					var NextInode Inode
 					// Read object from bin file
 					if err := LeerObjeto(file, &NextInode, int64(tempSuperblock.S_inode_start+inodos_ocupados*int32(binary.Size(Inode{})))); err != nil {
-						return err
+						return "", err
 					}
 
-					AddingNewFile(carpeta, NextInode, file, tempSuperblock, inodos_ocupados, superblock_start, cont_folder+1, cont, r)
-
-					return nil
+					return AddingNewFile(carpeta, NextInode, file, tempSuperblock, inodos_ocupados, superblock_start, cont_folder+1, cont, r)
 
 				} else {
 					fmt.Println("\n        ERROR: la carpeta \"" + carpeta[cont_folder] + "\" no se ha encontrado")
+
+					datos += "\n        ERROR: la carpeta \"" + carpeta[cont_folder] + "\" no se ha encontrado"
 
 					break
 				}
@@ -806,7 +845,9 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 
 	fmt.Println("\n\n========================= Finalizando AddingNewFile ===========================")
 
-	return nil
+	datos += "\n\n========================= Finalizando AddingNewFile ==========================="
+
+	return datos, nil
 }
 
 func CreateNewBlock(newCadena string, contador int, crrInode Inode, num_inodo int32, tempSuperblock *Superblock, file *os.File, superblock_start int32) {

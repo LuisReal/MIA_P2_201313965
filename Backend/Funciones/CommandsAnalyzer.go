@@ -56,15 +56,15 @@ func AnalyzeComand(command string, params string) string {
 	} else if command == "rmdisk" {
 		bn_rmdisk(params)
 	} else if command == "fdisk" {
-		bn_fdisk(params)
+		datos += bn_fdisk(params)
 	} else if command == "mount" {
-		bn_mount(params)
+		datos += bn_mount(params)
 	} else if command == "unmount" {
-		bn_unmount(params)
+		datos += bn_unmount(params)
 	} else if command == "mkfs" {
-		bn_mkfs(params)
+		datos += bn_mkfs(params)
 	} else if command == "login" {
-		bn_login(params)
+		datos += bn_login(params)
 	} else if command == "mkgrp" {
 		bn_mkgrp(params)
 	} else if command == "rmgrp" {
@@ -74,13 +74,13 @@ func AnalyzeComand(command string, params string) string {
 	} else if command == "rmusr" {
 		bn_rmusr(params)
 	} else if command == "logout" {
-		bn_logout()
+		datos += bn_logout()
 	} else if command == "pause" {
 		bn_pause()
 	} else if command == "mkdir" {
-		bn_mkdir(params)
+		datos += bn_mkdir(params)
 	} else if command == "mkfile" {
-		bn_mkfile(params)
+		datos += bn_mkfile(params)
 	} else if command == "cat" {
 		bn_cat(params)
 	} else if command == "remove" {
@@ -91,6 +91,7 @@ func AnalyzeComand(command string, params string) string {
 		bn_reportes(params)
 	} else {
 		fmt.Println("Error: Command not found")
+		datos += "Error: Command not found"
 	}
 
 	return datos
@@ -204,8 +205,8 @@ func bn_cat(params string) {
 	Cat(*file)
 }
 
-func bn_mkdir(params string) { //mkdir -path=/bin
-
+func bn_mkdir(params string) string { //mkdir -path=/bin
+	datos := ""
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
 	//execute -path=/home/darkun/Escritorio/basico.mia
@@ -234,9 +235,10 @@ func bn_mkdir(params string) { //mkdir -path=/bin
 		case "r", "path":
 			fs.Set(flagName, flagValue)
 		default:
-			fmt.Println("Error: Flag not found")
+			//fmt.Println("Error: Flag not found")
+			datos += "Error: Flag not found"
 
-			return
+			return datos
 		}
 	}
 
@@ -259,19 +261,23 @@ func bn_mkdir(params string) { //mkdir -path=/bin
 	for i := 0; i < len(newSlice); i++ {
 
 		if newSlice[i] == "-r" {
-			fmt.Println("Existe el parametro -r")
+			datos += "Existe el parametro -r"
 			*r = "1"
 
 		}
 	}
 
-	fmt.Println("\nEl valor de -r es: ", *r)
+	datos += "\nEl valor de -r es: " + *r
 	// Call the function
-	Mkdir(newInput, *r)
+	data, _ := Mkdir(newInput, *r)
+
+	datos += data
+
+	return datos
 }
 
-func bn_mkfile(params string) { //mkdir -path=/bin
-
+func bn_mkfile(params string) string { //mkdir -path=/bin
+	datos := ""
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
 	//execute -path=/home/darkun/Escritorio/basico.mia
@@ -303,8 +309,9 @@ func bn_mkfile(params string) { //mkdir -path=/bin
 			fs.Set(flagName, flagValue)
 		default:
 			fmt.Println("Error: Flag not found")
+			datos += "Error: Flag not found"
 
-			return
+			return datos
 		}
 	}
 
@@ -320,6 +327,7 @@ func bn_mkfile(params string) { //mkdir -path=/bin
 
 	newInput := strings.Replace(newOutput, " ", "\"", -1) //reemplazando con comillas el espacio entre "archivos 19" por "archivos"19"
 	fmt.Println("El newInput es: ", newInput)
+	datos += "El newInput es: " + newInput
 
 	newSlice := []string{slice_params[0], newInput}
 	fmt.Println("newSlice es: ", newSlice)
@@ -335,7 +343,11 @@ func bn_mkfile(params string) { //mkdir -path=/bin
 
 	fmt.Println("\nEl valor de -r es: ", *r)
 	// Call the function
-	Mkfile(newInput, *r, *size, *cont)
+	data, _ := Mkfile(newInput, *r, *size, *cont)
+
+	datos += data
+
+	return datos
 }
 
 func bn_pause() {
@@ -477,8 +489,8 @@ func bn_rmdisk(params string) {
 
 }
 
-func bn_fdisk(input string) {
-
+func bn_fdisk(input string) string {
+	datos := ""
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
 	//execute -path=/home/darkun/Escritorio/basico.mia
@@ -534,9 +546,10 @@ func bn_fdisk(input string) {
 		case "size", "fit", "unit", "driveletter", "name", "type", "delete", "add":
 			fs.Set(flagName, flagValue)
 		default:
-			fmt.Println("Error: Flag not found")
+			//fmt.Println("Error: Flag not found")
+			datos += "Error: Flag not found"
 
-			return
+			return datos
 		}
 	}
 
@@ -544,11 +557,13 @@ func bn_fdisk(input string) {
 	// Call the function
 
 	//fmt.Println("\nImprimiendo valor de formateo: ", formateo)
-	Fdisk(*size, *driveletter, *name, *unit, *type_, *fit, *delete, *add, formateo)
+	datos += Fdisk(*size, *driveletter, *name, *unit, *type_, *fit, *delete, *add, formateo)
+
+	return datos
 }
 
-func bn_mount(input string) {
-
+func bn_mount(input string) string {
+	datos := ""
 	//execute -path=/home/darkun/Escritorio/avanzado.mia
 
 	//execute -path=/home/darkun/Escritorio/basico.mia
@@ -575,17 +590,20 @@ func bn_mount(input string) {
 		case "driveletter", "name":
 			fs.Set(flagName, flagValue)
 		default:
-			fmt.Println("Error: Flag not found")
-
-			return
+			//fmt.Println("Error: Flag not found")
+			datos += "Error: Flag not found"
+			return datos
 		}
 	}
 
 	// Call the function
-	Mount(*driveletter, *name)
+	datos += Mount(*driveletter, *name)
+
+	return datos
 }
 
-func bn_unmount(input string) {
+func bn_unmount(input string) string {
+	datos := ""
 
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
@@ -615,18 +633,21 @@ func bn_unmount(input string) {
 		case "id":
 			fs.Set(flagName, flagValue)
 		default:
-			fmt.Println("Error: Flag not found")
+			//fmt.Println("Error: Flag not found")
+			datos += "Error: Flag not found"
 
-			return
+			return datos
 		}
 	}
 
 	// Call the function
-	UnMount(*id)
+	datos += UnMount(*id)
+
+	return datos
 }
 
-func bn_mkfs(input string) {
-
+func bn_mkfs(input string) string {
+	datos := ""
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
 	//execute -path=/home/darkun/Escritorio/basico.mia
@@ -654,18 +675,22 @@ func bn_mkfs(input string) {
 		case "id", "type", "fs":
 			fs.Set(flagName, flagValue)
 		default:
-			fmt.Println("Error: Flag not found")
+			//fmt.Println("Error: Flag not found")
+			datos += "Error: Flag not found"
 
-			return
+			return datos
 		}
 	}
 
 	// Call the function
-	Mkfs(*id, *type_, *fs_)
+	datos += Mkfs(*id, *type_, *fs_)
 
+	return datos
 }
 
-func bn_login(input string) {
+func bn_login(input string) string {
+
+	datos := ""
 
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
@@ -694,14 +719,16 @@ func bn_login(input string) {
 		case "user", "pass", "id":
 			fs.Set(flagName, flagValue)
 		default:
-			fmt.Println("Error: Flag not found")
-
-			return
+			//fmt.Println("Error: Flag not found")
+			datos += "Error: Flag not found"
+			return datos
 		}
 	}
 
 	// Call the function
-	Login(*user, *pass, *id)
+	dat, _ := Login(*user, *pass, *id)
+
+	datos += dat
 
 	/*EL usuario root puede ejecutar los siguientes comandos:
 	MKGRP
@@ -709,25 +736,35 @@ func bn_login(input string) {
 	MKUSR
 	RMUSR
 	*/
+
+	return datos
 }
 
-func bn_logout() {
+func bn_logout() string {
+	datos := ""
 
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
 	//execute -path=/home/darkun/Escritorio/scripts.sdaa
 
 	fmt.Println("\n\n========================= Iniciando Logout =========================")
+	datos += "\n\n========================= Iniciando Logout ========================="
+
 	if User_.Status {
 		fmt.Println("\n Cerrando sesion de usuario: ", User_.Nombre)
+		datos += "\n Cerrando sesion de usuario: " + User_.Nombre
 		User_.Nombre = ""
 		User_.Status = false
 		User_.Id = ""
 	} else {
 		fmt.Println("\nERROR: No hay sesion actual")
+		datos += "\nERROR: No hay sesion actual"
 	}
 
 	fmt.Println("\n\n========================= Finalizando Logout =========================")
+	datos += "\n\n========================= Finalizando Logout ========================="
+
+	return datos
 }
 
 func bn_mkgrp(input string) {

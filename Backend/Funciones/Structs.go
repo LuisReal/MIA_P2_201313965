@@ -2,6 +2,7 @@ package Funciones
 
 import (
 	"fmt"
+	"strconv"
 )
 
 type User struct {
@@ -27,22 +28,27 @@ type MBR struct {
 
 }
 
-func PrintMBR(data MBR) {
-	fmt.Printf("CreationDate: %s, fit: %s, size: %d", string(data.Mbr_fecha_creacion[:]), string(data.Dsk_fit[:]), data.Mbr_tamano)
-	fmt.Println()
+func PrintMBR(data MBR) string {
+	datos := ""
+
+	//fmt.Printf("CreationDate: %s, fit: %s, size: %d", string(data.Mbr_fecha_creacion[:]), string(data.Dsk_fit[:]), data.Mbr_tamano)
+	//fmt.Println()
+	datos += "\nCreationDate: " + string(data.Mbr_fecha_creacion[:]) + " fit: " + string(data.Dsk_fit[:]) + " size: " + strconv.Itoa(int(data.Mbr_tamano))
 
 	for i := 0; i < 4; i++ {
 
-		fmt.Printf(" Particion: %d, Nombre: %s, Tipo de Particion:  %s, fit: %s,Tamano de Particion: %d, start: %d, id: %s, correlativo: %d, status: %t",
-			i, string(data.Mbr_partitions[i].Part_name[:]), string(data.Mbr_partitions[i].Part_type[:]), string(data.Mbr_partitions[i].Part_fit[:]), int(data.Mbr_partitions[i].Part_size), int(data.Mbr_partitions[i].Part_start),
-			string(data.Mbr_partitions[i].Part_id[:]), int(data.Mbr_partitions[i].Part_correlative), data.Mbr_partitions[i].Part_status)
-		fmt.Println()
+		datos += "\nParticion: " + strconv.Itoa(i) + "  Nombre: " + string(data.Mbr_partitions[i].Part_name[:]) + "  Tipo de Particion: " + string(data.Mbr_partitions[i].Part_type[:]) +
+			"  fit: " + string(data.Mbr_partitions[i].Part_fit[:]) + "  Tamano de Particion: " + strconv.Itoa(int(data.Mbr_partitions[i].Part_size)) + "  start: " + strconv.Itoa(int(data.Mbr_partitions[i].Part_start)) +
+			"  id: " + string(data.Mbr_partitions[i].Part_id[:]) + "  correlativo: " + strconv.Itoa(int(data.Mbr_partitions[i].Part_correlative)) + "  status: " + strconv.FormatBool(data.Mbr_partitions[i].Part_status)
+
 	}
 
 	/*
 		for i := 0; i < 4; i++ {
 			fmt.Println(fmt.Sprintf("Partition %d: %s, %s, %d, %d", i, string(data.Mbr_partitions[i].Name[:]), string(data.Mbr_partitions[i].Type[:]), data.Mbr_partitions[i].Start, data.Mbr_partitions[i].Size))
 		}*/
+
+	return datos
 }
 
 type Partition struct {

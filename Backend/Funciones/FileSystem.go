@@ -4,15 +4,20 @@ import (
 	"encoding/binary"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
-func Mkfs(id string, type_ string, fs_ string) {
+func Mkfs(id string, type_ string, fs_ string) string {
+
+	datos := ""
 
 	id = strings.ToUpper(id)
 
-	fmt.Println("\n\n=========================Iniciando MKFS===========================")
-	fmt.Println()
+	//fmt.Println("\n\n=========================Iniciando MKFS===========================")
+	//fmt.Println()
+
+	datos += "\n\n=========================Iniciando MKFS==========================="
 
 	driveletter := string(id[0])
 
@@ -20,13 +25,13 @@ func Mkfs(id string, type_ string, fs_ string) {
 	filepath := "./archivos/" + driveletter + ".dsk"
 	file, err := AbrirArchivo(filepath)
 	if err != nil {
-		return
+		return ""
 	}
 
 	var TempMBR MBR
 	// Read object from bin file
 	if err := LeerObjeto(file, &TempMBR, 0); err != nil {
-		return
+		return ""
 	}
 
 	// Print object
@@ -37,13 +42,17 @@ func Mkfs(id string, type_ string, fs_ string) {
 	for i := 0; i < 4; i++ {
 		if TempMBR.Mbr_partitions[i].Part_size != 0 {
 			if strings.Contains(string(TempMBR.Mbr_partitions[i].Part_id[:]), id) {
-				fmt.Println("\n*********************Particion Encontrada****************")
+				//fmt.Println("\n*********************Particion Encontrada****************")
+				datos += "\n*********************Particion Encontrada****************"
+
 				if TempMBR.Mbr_partitions[i].Part_status { // si la particion es true es porque esta montada
-					fmt.Println("\n ********************La Particion esta montada**********************")
+					//fmt.Println("\n ********************La Particion esta montada**********************")
+					datos += "\n ********************La Particion esta montada**********************"
 					index = i
 				} else {
-					fmt.Println("\n ********************La Particion no esta montada**********************")
-					return
+					//fmt.Println("\n ********************La Particion no esta montada**********************")
+					datos += "\n ********************La Particion no esta montada**********************"
+					return datos
 				}
 				break
 			}
@@ -53,8 +62,9 @@ func Mkfs(id string, type_ string, fs_ string) {
 	if index != -1 {
 		ImprimirParticion(TempMBR.Mbr_partitions[index])
 	} else {
-		fmt.Println("\n*********************Particion NO Encontrada****************")
-		return
+		//fmt.Println("\n*********************Particion NO Encontrada****************")
+		datos += "\n*********************Particion NO Encontrada****************"
+		return datos
 	}
 
 	numerador := int32(TempMBR.Mbr_partitions[index].Part_size - int32(binary.Size(Superblock{})))
@@ -67,17 +77,22 @@ func Mkfs(id string, type_ string, fs_ string) {
 
 		temp = int32(binary.Size(Journaling{}))
 
-		fmt.Println("\n *******************El tamano del journaling (en bytes) es: ", temp)
+		//fmt.Println("\n *******************El tamano del journaling (en bytes) es: ", temp)
+		datos += "\n *******************El tamano del journaling (en bytes) es: " + strconv.Itoa(int(temp))
+
 	} else {
-		fmt.Println("\nIngrese un sistema de archivo correcto")
+		//fmt.Println("\nIngrese un sistema de archivo correcto")
+		datos += "\nIngrese un sistema de archivo correcto"
+
 	}
 	denominador := denominador_base + temp
 
-	fmt.Println("\nEl valor del numerador es: ", numerador)
-	fmt.Println("\nEl valor del denominador es: ", denominador)
+	//fmt.Println("\nEl valor del numerador es: ", numerador)
+	//fmt.Println("\nEl valor del denominador es: ", denominador)
 	n := int32(numerador / denominador)
 
-	fmt.Println("\n*************************El numero de estructuras N es: ", n)
+	//fmt.Println("\n*************************El numero de estructuras N es: ", n)
+	datos += "\n*************************El numero de estructuras N es: " + strconv.Itoa(int(n))
 
 	// var newMRB Structs.MRB
 	var newSuperblock Superblock
@@ -92,7 +107,7 @@ func Mkfs(id string, type_ string, fs_ string) {
 	//newSuperblock.S_mnt_count = 0                    (No se evaluara cuantas veces fue montado el sistema)
 
 	if fs_ == "2fs" {
-		ext2(n, TempMBR.Mbr_partitions[index], newSuperblock, file)
+		datos += ext2(n, TempMBR.Mbr_partitions[index], newSuperblock, file)
 	} else {
 		ext3(n, TempMBR.Mbr_partitions[index], newSuperblock, file)
 	}
@@ -100,12 +115,17 @@ func Mkfs(id string, type_ string, fs_ string) {
 	// Close bin file
 	defer file.Close()
 
-	fmt.Println("\n\n=========================Finalizando MKFS===========================")
+	//fmt.Println("\n\n=========================Finalizando MKFS===========================")
+
+	datos += "\n\n=========================Finalizando MKFS==========================="
+
+	return datos
 }
 
-func ext2(n int32, partition Partition, newSuperblock Superblock, file *os.File) {
-
-	fmt.Println("\n\n=========================Creando ext2===========================")
+func ext2(n int32, partition Partition, newSuperblock Superblock, file *os.File) string {
+	datos := ""
+	//fmt.Println("\n\n=========================Creando ext2===========================")
+	datos += "\n\n=========================Creando ext2==========================="
 
 	newSuperblock.S_filesystem_type = 2
 	newSuperblock.S_bm_inode_start = partition.Part_start + int32(binary.Size(Superblock{}))
@@ -254,8 +274,10 @@ func ext2(n int32, partition Partition, newSuperblock Superblock, file *os.File)
 		fmt.Println("Error: ", err)
 	}
 
-	fmt.Println("Inode 0:", int64(newSuperblock.S_inode_start))
-	fmt.Println("Inode 1:", int64(newSuperblock.S_inode_start+int32(binary.Size(Inode{}))))
+	//fmt.Println("Inode 0:", int64(newSuperblock.S_inode_start))
+	datos += "Inode 0:" + strconv.Itoa(int(int64(newSuperblock.S_inode_start)))
+	//fmt.Println("Inode 1:", int64(newSuperblock.S_inode_start+int32(binary.Size(Inode{}))))
+	datos += "Inode 1:" + strconv.Itoa(int(int64(newSuperblock.S_inode_start+int32(binary.Size(Inode{})))))
 
 	// escribiendo inodes
 	err = EscribirObjeto(file, Inode0, int64(newSuperblock.S_inode_start)) //Inode 0
@@ -280,7 +302,10 @@ func ext2(n int32, partition Partition, newSuperblock Superblock, file *os.File)
 		fmt.Println("Error: ", err)
 	}
 
-	fmt.Println("\n\n=========================Finalizando ext2===========================")
+	//fmt.Println("\n\n=========================Finalizando ext2===========================")
+	datos += "\n\n=========================Finalizando ext2==========================="
+
+	return datos
 }
 
 func ext3(n int32, partition Partition, newSuperblock Superblock, file *os.File) {
