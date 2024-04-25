@@ -88,7 +88,7 @@ func AnalyzeComand(command string, params string) string {
 	} else if command == "move" {
 		bn_move(params)
 	} else if command == "rep" {
-		bn_reportes(params)
+		datos += bn_reportes(params)
 	} else {
 		fmt.Println("Error: Command not found")
 		datos += "Error: Command not found"
@@ -368,8 +368,8 @@ func bn_pause() {
 
 }
 
-func bn_reportes(params string) {
-
+func bn_reportes(params string) string {
+	datos := ""
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
 	//execute -path=/home/darkun/Escritorio/basico.mia
@@ -398,15 +398,19 @@ func bn_reportes(params string) {
 			fs.Set(flagName, flagValue)
 		default:
 			fmt.Println("Error: Flag not found")
-
-			return
+			datos += "Error: Flag not found"
+			return datos
 		}
 	}
 
 	// Call the function
-	Reportes(*name, *path, *id, *ruta)
+	data, _ := Reportes(*name, *path, *id, *ruta)
 
+	datos += data
+
+	return datos
 }
+
 func bn_mkdisk(params string) string {
 
 	//execute -path=/home/darkun/Escritorio/prueba.mia

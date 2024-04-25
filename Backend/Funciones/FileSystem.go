@@ -275,9 +275,9 @@ func ext2(n int32, partition Partition, newSuperblock Superblock, file *os.File)
 	}
 
 	//fmt.Println("Inode 0:", int64(newSuperblock.S_inode_start))
-	datos += "Inode 0:" + strconv.Itoa(int(int64(newSuperblock.S_inode_start)))
+	datos += "\nInode 0:" + strconv.Itoa(int(int64(newSuperblock.S_inode_start)))
 	//fmt.Println("Inode 1:", int64(newSuperblock.S_inode_start+int32(binary.Size(Inode{}))))
-	datos += "Inode 1:" + strconv.Itoa(int(int64(newSuperblock.S_inode_start+int32(binary.Size(Inode{})))))
+	datos += "\nInode 1:" + strconv.Itoa(int(int64(newSuperblock.S_inode_start+int32(binary.Size(Inode{})))))
 
 	// escribiendo inodes
 	err = EscribirObjeto(file, Inode0, int64(newSuperblock.S_inode_start)) //Inode 0
