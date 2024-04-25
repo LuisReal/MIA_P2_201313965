@@ -10,14 +10,14 @@ import (
 
 func Login(user string, pass string, id string) (string, error) {
 	data := ""
-	//fmt.Println("\n\n========================= LOGIN ===========================")
+	fmt.Println("\n\n========================= LOGIN ===========================")
 	data += "\n\n========================= LOGIN ==========================="
 
 	if User_.Nombre == user {
-		//fmt.Println("\n\n ******* ERROR: El usuario ya esta logueado *******")
+		fmt.Println("\n\n ******* ERROR: El usuario ya esta logueado *******")
 		data += "\n\n ******* ERROR: El usuario ya esta logueado *******"
 
-		//fmt.Println("\n\n========================= FIN LOGIN ===========================")
+		fmt.Println("\n\n========================= FIN LOGIN ===========================")
 		data += "\n\n========================= FIN LOGIN ==========================="
 		return data, nil
 	}
@@ -53,15 +53,15 @@ func Login(user string, pass string, id string) (string, error) {
 	for i := 0; i < 4; i++ {
 		if TempMBR.Mbr_partitions[i].Part_size != 0 {
 			if strings.Contains(string(TempMBR.Mbr_partitions[i].Part_id[:]), id) {
-				//fmt.Println("\n****Particion Encontrada*****")
+				fmt.Println("\n****Particion Encontrada*****")
 				data += "\n****Particion Encontrada*****"
 
 				if TempMBR.Mbr_partitions[i].Part_status { // si la particion esta montada = true
-					//fmt.Println("\n*******La particion esta montada*****")
+					fmt.Println("\n*******La particion esta montada*****")
 					data += "\n*******La particion esta montada*****"
 					index = i
 				} else {
-					//fmt.Println("\n*******La particion NO esta montada*****")
+					fmt.Println("\n*******La particion NO esta montada*****")
 					data += "\n*******La particion NO esta montada*****"
 					return data, nil
 				}
@@ -74,7 +74,7 @@ func Login(user string, pass string, id string) (string, error) {
 		ImprimirParticion(TempMBR.Mbr_partitions[index])
 		fmt.Println()
 	} else {
-		//fmt.Println("\n*****Particion NO encontrada******")
+		fmt.Println("\n*****Particion NO encontrada******")
 		data += "\n*****Particion NO encontrada******"
 		return data, err
 	}
@@ -125,16 +125,6 @@ func Login(user string, pass string, id string) (string, error) {
 	data += "\nel ultimo bloque creado es: " + strconv.Itoa(bloque) + " index: " + strconv.Itoa(indice)
 	//fmt.Println()
 
-	// getInodeFileData -> Iterate the I_Block n concat the data
-	/*
-		var fileblock Fileblock
-
-		fileblock_start := tempSuperblock.S_block_start + crrInode.I_block[0]*int32(binary.Size(Fileblock{}))
-
-		if err := LeerObjeto(file, &fileblock, int64(fileblock_start)); err != nil {
-			return err
-		}*/
-
 	//fmt.Println("\nFileblock------------")
 	data += "\nFileblock------------"
 	//data := "1,G,root\n1,U,root,root,123\n"
@@ -172,29 +162,35 @@ func Login(user string, pass string, id string) (string, error) {
 				User_.Gid, _ = SearchByUser(datos[2], crrInode, file, tempSuperblock)
 				User_.Uid = strconv.Itoa(user_id)
 
-				//fmt.Println("\nUsuario: ", User_.Nombre, " ID Particion: ", User_.Id, " Group ID: ", User_.Gid, " User ID: ", User_.Uid)
+				fmt.Println("\nUsuario: ", User_.Nombre, " ID Particion: ", User_.Id, " Group ID: ", User_.Gid, " User ID: ", User_.Uid)
 				data += "\nUsuario: " + User_.Nombre + " ID Particion: " + User_.Id + " Group ID: " + User_.Gid + " User ID: " + User_.Uid
 
-				//fmt.Println("\n **********Usuario encontrado***********")
+				fmt.Println("\n **********Usuario encontrado***********")
 
 				data += "\n **********Usuario encontrado***********"
 
-				//fmt.Println("\n\n========================= FIN LOGIN ===========================")
+				fmt.Println("\n\n========================= FIN LOGIN ===========================")
 
 				data += "\n\n========================= FIN LOGIN ==========================="
 
 				exist++
+
+				//fmt.Println("Devolviendo data login \n", data)
+
+				return data, nil
 
 			}
 		}
 
 	}
 
+	fmt.Println("Estoy despues del for")
+
 	// Close bin file
 
 	if exist == 0 {
 
-		//fmt.Println("\n*********Usuario NO encontrado**********")
+		fmt.Println("\n*********Usuario NO encontrado**********")
 		data += "\n*********Usuario NO encontrado**********"
 
 		//fmt.Println("\n\n========================= FIN LOGIN ===========================")

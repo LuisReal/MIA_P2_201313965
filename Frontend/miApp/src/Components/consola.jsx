@@ -4,6 +4,8 @@ import React from 'react'
 
 function Consola() {
 
+    
+
     const [datos, setDatos] = useState(
         {
             comando: ''
@@ -47,12 +49,14 @@ function Consola() {
         ).catch(err =>{
             console.error(err)
         }).then(res =>{
-           
-           setData(
-            {info: res.data}
-        )
+            
+            setData(
+                {info: res.data}
+            )
              
         })
+
+        document.getElementById("entrada").value = ""
         
     }
 
@@ -64,9 +68,9 @@ function Consola() {
             <div style={{position:"relative",  marginLeft:280, border:"1px solid blue", height:500}}>
 
                 <form action="" onSubmit={mostrarDatos}>
-                    <p style={{whiteSpace: "pre-line", height:450, width:1550, border:"3px solid black", position:"absolute"}}  >{showData.info}</p>
+                    <p  style={{overflowY: "scroll", whiteSpace: "pre-line", height:450, width:1550, border:"3px solid black", position:"absolute"}}  >{showData.info}</p>
 
-                    <input type="text" onChange={getDatos} name="comando" style={{height:50, width:1480, position:"absolute", marginTop:450}} placeholder="Ingrese comando" />
+                    <textarea id="entrada" onChange={getDatos} name="comando" style={{overflowY: "scroll", whiteSpace: "pre-line", height:150, width:1480, position:"absolute", marginTop:450}} placeholder="Ingrese comando" ></textarea>
                     <button type="submit" className='btn btn-primary' style={{height:50, position:"absolute", marginLeft:1480, marginTop:450}}>Enviar</button>
                     
                 </form>

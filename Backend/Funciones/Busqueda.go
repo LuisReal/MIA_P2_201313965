@@ -153,7 +153,7 @@ func SearchByUser(grupo string, Inodo Inode, file *os.File, tempSuperblock Super
 		if len(datos) > 2 {
 
 			if string(datos[2]) == grupo {
-
+				fmt.Println("=================== Fin SearchByUser ===================")
 				return id, nil
 
 			}

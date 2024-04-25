@@ -19,7 +19,7 @@ func Mkdisk(size int, fit string, unit string, letra string) string {
 	datos := ""
 
 	fmt.Println("\n\n==================================== Iniciando funcion MKDISK ====================================")
-	datos += "\n==================================== Iniciando funcion MKDISK ===================================="
+	datos += "\n\n==================================== Iniciando funcion MKDISK ===================================="
 
 	letra = strings.ToUpper(letra)
 
@@ -901,7 +901,7 @@ func Mount(driveletter string, name string) string {
 	datos := ""
 	//fmt.Println("\n================================= Iniciando MOUNT ======================================")
 	//fmt.Println()
-	datos += "\n================================= Iniciando MOUNT ======================================"
+	datos += "\n\n================================= Iniciando MOUNT ======================================"
 	// Open bin file
 	file, err := AbrirArchivo("./archivos/" + strings.ToUpper(driveletter) + ".dsk")
 	if err != nil {

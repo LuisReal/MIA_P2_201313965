@@ -1,6 +1,7 @@
 package Funciones
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"os"
@@ -37,13 +38,47 @@ func getCommandAndParams(input string) (string, string) {
 
 func Analyze(input string) string {
 
+	datos := ""
+
+	scanner := bufio.NewScanner(strings.NewReader(input))
+
+	var newLine string
+
+	for scanner.Scan() {
+		//fmt.Println("Leyendo linea del input")
+		//fmt.Println(scanner.Text())
+
+		linea := scanner.Text()
+
+		if linea != "" {
+
+			for i := 0; i < len(linea); i++ {
+
+				if string(linea[i]) == "#" {
+
+					break
+				}
+
+				newLine += string(linea[i])
+			}
+
+			if newLine != "" {
+				command, params := getCommandAndParams(scanner.Text())
+
+				fmt.Println("Command: ", command, "Params: ", params)
+
+				datos += AnalyzeComand(command, params)
+			}
+
+		}
+
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Printf("error occurred: %v\n", err)
+	}
+
 	//se valida ejecucion de comando execute
-
-	command, params := getCommandAndParams(input)
-
-	fmt.Println("Command: ", command, "Params: ", params)
-
-	datos := AnalyzeComand(command, params)
 
 	return datos
 }
@@ -731,6 +766,8 @@ func bn_login(input string) string {
 
 	// Call the function
 	dat, _ := Login(*user, *pass, *id)
+
+	//fmt.Println("Devolviendo data: \n", dat)
 
 	datos += dat
 

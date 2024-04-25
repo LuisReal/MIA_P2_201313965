@@ -94,8 +94,8 @@ type Partition struct {
 func insertComand(w http.ResponseWriter, r *http.Request) {
 
 	var newTask Task
-	var login Login
-	var sesionArray Sesion
+	//var login Login
+	//var sesionArray Sesion
 	var consola dataConsola
 
 	body, err := io.ReadAll(r.Body)
@@ -119,18 +119,21 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 
-	if Funciones.User_.Status {
-		//fmt.Fprintf(w, "Devolviendo la informacion del login\n")
-		login.Usuario = Funciones.User_.Nombre
-		login.IdPartition = Funciones.User_.Id
+	/*
+		if Funciones.User_.Status {
+			//fmt.Fprintf(w, "Devolviendo la informacion del login\n")
+			login.Usuario = Funciones.User_.Nombre
+			login.IdPartition = Funciones.User_.Id
 
-		sesionArray = append(sesionArray, login)
+			sesionArray = append(sesionArray, login)
 
-		json.NewEncoder(w).Encode(sesionArray)
-	} else {
-		//json.NewEncoder(w).Encode(newTask)
-		json.NewEncoder(w).Encode(consola)
-	}
+			json.NewEncoder(w).Encode(sesionArray)
+		} else {
+			//json.NewEncoder(w).Encode(newTask)
+			json.NewEncoder(w).Encode(consola)
+		}*/
+
+	json.NewEncoder(w).Encode(consola)
 
 }
 

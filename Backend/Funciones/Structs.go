@@ -70,7 +70,7 @@ type Partition struct {
 }
 
 func ImprimirParticion(data Partition) {
-	fmt.Printf("Name: %s, type: %s, start: %d, size: %d, status: %t, id: %s", string(data.Part_name[:]), string(data.Part_type[:]), data.Part_start, data.Part_size, data.Part_status, string(data.Part_id[:]))
+	fmt.Printf("\nName: %s, type: %s, start: %d, size: %d, status: %t, id: %s", string(data.Part_name[:]), string(data.Part_type[:]), data.Part_start, data.Part_size, data.Part_status, string(data.Part_id[:]))
 	fmt.Println()
 }
 

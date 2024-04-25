@@ -1,0 +1,5 @@
+digraph G {
+		labelloc="t";
+        label="Disco C";
+        fontsize="50"
+		node [shape=record];struct1 [label="MBR|Primaria&#92;n 28.57%|Primaria&#92;n 28.57%|Primaria&#92;n 7.14%|Libre&#92;n35.71%"];}
