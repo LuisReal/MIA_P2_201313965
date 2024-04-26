@@ -63,15 +63,18 @@ func Analyze(input string) string {
 			}
 
 			if newLine != "" {
-				command, params := getCommandAndParams(scanner.Text())
+
+				command, params := getCommandAndParams(newLine)
+
+				newLine = ""
 
 				fmt.Println("Command: ", command, "Params: ", params)
 
 				datos += AnalyzeComand(command, params)
+
 			}
 
 		}
-
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -289,9 +292,11 @@ func bn_mkdir(params string) string { //mkdir -path=/bin
 
 	newInput := strings.Replace(newOutput, " ", "\"", -1) //reemplazando con comillas el espacio entre "archivos 19" por "archivos"19"
 	//fmt.Println("El newInput es: ", newInput)
+	fmt.Println("El newInput es: ", newInput)
+	datos += "El newInput es: " + newInput
 
 	newSlice := []string{slice_params[0], newInput}
-	//fmt.Println("newSlice es: ", newSlice)
+	fmt.Println("newSlice es: ", newSlice)
 
 	for i := 0; i < len(newSlice); i++ {
 

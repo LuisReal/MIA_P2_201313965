@@ -4,7 +4,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "./usercontext";
 
 export default function Login() {
-  const [data, setData] = useState([]) 
+  const [data, setData] = useState(
+   
+        {
+            info: '',
+            status: false
+        }
+  ) 
   const navigate = useNavigate()
 
   const { disk, particion } = useParams()
@@ -37,13 +43,23 @@ export default function Login() {
     }).then(response => response.json()
     ).catch(err =>{
         console.error(err)
-    }).then(loginData =>{
+    }).then(res =>{
        
-       setData(loginData)
+       setData(
+        {   info: res.data,
+            status: res.status
+        }
+
+       )
     })
 
+    if (data.status) {
+        navigate(`/disk/${disk}/${particion}/sucess`)
+    }else{
+        alert("Usuario o contrasena invalidos");
+    }
    
-    navigate(`/disk/${disk}/${particion}/sucess`)
+    
     
 }
 
@@ -88,25 +104,6 @@ export default function Login() {
 
                     </form>
 
-                    {
-                        data.map((objIterable, index) => {
-                            return (
-                            
-                            <div key={index} style={{
-                                border: "green 1px solid",
-                                display: "flex",
-                                flexDirection: "column", // Alinea los elementos en columnas
-                                alignItems: "center", // Centra verticalmente los elementos
-                                maxWidth: "100px",
-                            }}
-                                
-                            >
-                                
-                                <p style={{marginTop:50}}>{objIterable.id}</p>
-                            </div>
-                            )
-                        })
-                      }
                 
             
             </div>

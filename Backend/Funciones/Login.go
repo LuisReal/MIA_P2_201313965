@@ -193,7 +193,7 @@ func Login(user string, pass string, id string) (string, error) {
 		fmt.Println("\n*********Usuario NO encontrado**********")
 		data += "\n*********Usuario NO encontrado**********"
 
-		//fmt.Println("\n\n========================= FIN LOGIN ===========================")
+		fmt.Println("\n\n========================= FIN LOGIN ===========================")
 		data += "\n\n========================= FIN LOGIN ==========================="
 		return data, nil
 	}

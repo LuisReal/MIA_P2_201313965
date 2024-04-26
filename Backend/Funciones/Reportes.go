@@ -741,7 +741,8 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 						var indice int
 
 						for j := 0; j < 4; j++ { // si es un bloque de carpetas
-							//fmt.Println("\nEl name de folder es: ", string(folder.B_content[j].B_name[:]))
+							fmt.Println("\nEl name de folder es: ", string(folder.B_content[j].B_name[:]))
+
 							for k := 0; k < len(folder.B_content[j].B_name[:]); k++ {
 								if folder.B_content[j].B_name[k] == 0 { //quitando espacios(los ceros restantes) al slice de B_name
 									indice = k
@@ -749,12 +750,27 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 								}
 
 							}
-							//fmt.Println("\nEl indice es: ", indice)
-							name := string(folder.B_content[j].B_name[:indice])
+							fmt.Println("El indice es: ", indice)
+
+							if folder.B_content[j].B_name[0] == 0 {
+								break
+							}
+							var name string
+
+							if indice != 0 {
+								name = string(folder.B_content[j].B_name[:indice])
+							} else {
+								name = string(folder.B_content[j].B_name[:])
+							}
+
 							inodo := folder.B_content[j].B_inodo
+							fmt.Println("La nueva carpeta es: ", name)
 
 							//fmt.Println("\nInodo es: ", inodo)
 							grafo += `<tr><td>` + name + `</td><td port='` + strconv.Itoa(j+1) + `'>` + strconv.Itoa(int(inodo)) + `</td></tr>`
+
+							indice = 0
+
 						}
 
 						grafo += `</table>

@@ -19,15 +19,8 @@ type Task struct {
 }
 
 type dataConsola struct {
-	Data string `json:"data"`
-}
-
-type ArrayConsola []dataConsola
-
-var TasksConsola = ArrayConsola{
-	{
-		Data: "",
-	},
+	Data   string `json:"data"`
+	Status bool   `json:"status"`
 }
 
 type Login struct {
@@ -113,7 +106,7 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 	data := Funciones.Analyze(input) // enviando el comando
 
 	consola.Data = data
-
+	consola.Status = Funciones.User_.Status
 	//fmt.Fprintf(w, "\nimprimiendo data consola\n%v", consola)
 
 	w.Header().Set("Content-Type", "application/json")

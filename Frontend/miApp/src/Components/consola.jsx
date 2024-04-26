@@ -14,7 +14,8 @@ function Consola() {
 
     const [showData, setData] = useState(
         {
-            info: ''
+            info: '',
+            status: false
         }
     )
 
@@ -51,7 +52,9 @@ function Consola() {
         }).then(res =>{
             
             setData(
-                {info: res.data}
+                {   info: res.data,
+                    status: res.status
+                }
             )
              
         })
