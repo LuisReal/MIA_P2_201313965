@@ -132,6 +132,7 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 
 	consola.Data = data
 	consola.Status = Funciones.User_.Status
+	fmt.Println("El status de User es: ", Funciones.User_.Status)
 	//fmt.Fprintf(w, "\nimprimiendo data consola\n%v", consola)
 
 	w.Header().Set("Content-Type", "application/json")

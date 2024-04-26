@@ -25,6 +25,25 @@
   background-color: rgb(153,222,234);
   
 }
+#enlace:hover{
+  
+  background-color: black;
+}
+
+#btn-logout{
+  
+  background-color: rgb(244,53,53);
+  color:RGB(244, 246, 247) !important;
+
+
+  font-size: 150%;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+#btn-logout:hover{
+  color:black !important;
+  background-color: rgb(171, 235, 198 ) ;
+}
 
 .sidenav {
 

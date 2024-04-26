@@ -7,8 +7,17 @@ import archivoIMG from "../../assets/archivo.png";
 
 function Sistema() {
 
-  const { disk } = useParams()
+  
+  const { disk, particion  } = useParams()
   const [data, setData] = useState([])
+
+
+  const [obj, setObjeto] = useState(
+    {
+      name: '/',
+      
+    }
+  )
   
   const navigate = useNavigate()
   const {setValue} = useContext(UserContext) //guarda el valor configurado en setValue en value(para ser usado en otro componente)
@@ -17,12 +26,6 @@ function Sistema() {
   
 
   useState(() => {
-
-    let obj = {
-        
-      'name': "Files"
-
-    }
 
     fetch(`http://localhost:3000/archivo`,{
               
@@ -45,17 +48,38 @@ function Sistema() {
 
   const onClick = (objIterable) => {
 
+    //alert(objIterable.name)
+    const obj_ = {
+      'name': objIterable.name
+    }
+
+    fetch(`http://localhost:3000/archivo`,{
+              
+    method : 'POST',
+    body: JSON.stringify(obj_),
+    headers:{
+    'Content-Type': 'application/json'   
+    }
+    }).then(response => response.json()
+    ).catch(err =>{
+        console.error(err)
+    }).then(res =>{
+      
+      setData(res)
+      
+    })
     //setValue(objIterable.id) // guarda el valor del id
-    
-    //navigate(`/Login/${disco}/${objIterable.name}`)
+    //console.log("obj.name es: ", obj.name)
+    navigate(`/disk/${disco}/${particion}/sistema/${objIterable.name}`)
+
+  
   }
 
   return (
     
 
       <div style={{position: "relative", marginLeft:280, border: "red 1px solid", display: "flex", flexDirection: "row" }}>
-         <p>Ruta</p>
-          <br/>
+         
         {
           data.map((objIterable, index) => {
             return (
@@ -69,22 +93,44 @@ function Sistema() {
               }}
                 onClick={() => onClick(objIterable)}
               >
-                {objIterable.tipo == "carpeta" &&
-                <>
-                  <img src={carpetaIMG} alt="carpeta" style={{ width: "100px" }} /> 
-                  <p>{objIterable.name}</p>
-                </> 
+               {/*} {objIterable.tipo == "carpeta" && (objIterable.name != "." || objIterable.name != "..") &&
+               
                 
-                }
-                
+                }*/}
 
-                {objIterable.tipo == "archivo" && 
+                {(() => {
+                  if (objIterable.tipo == "carpeta" && (objIterable.name != "."&& objIterable.name != "..")){
+                      return (
+                        <>
+                          <img src={carpetaIMG} alt="carpeta" style={{ width: "100px" }} /> 
+                          <p>{objIterable.name}</p>
+                        </> 
+                      )
+                  }
+                  
+                  return null;
+                })()}
+                
+                {(() => {
+                  if (objIterable.tipo == "archivo" && (objIterable.name != "." && objIterable.name != "..")){
+                      return (
+                        <>
+                          <img src={archivoIMG} alt="archivo" style={{ width: "100px" }} /> 
+                          <p>{objIterable.name}</p>
+                        </> 
+                      )
+                  }
+                  
+                  return null;
+                })()}
+
+                {/*{objIterable.tipo == "archivo" && (objIterable.name != "." || objIterable.name != "..") &&
                 <>
                   <img src={archivoIMG} alt="archivo" style={{ width: "100px" }} /> 
                   <p>{objIterable.name}</p>
                 </> 
                 
-                }
+                }*/}
                 
                 
               </div>

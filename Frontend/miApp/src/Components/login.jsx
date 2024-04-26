@@ -10,7 +10,10 @@ export default function Login() {
             info: '',
             status: false
         }
-  ) 
+  )
+
+  var estado = false
+  
   const navigate = useNavigate()
 
   const { disk, particion } = useParams()
@@ -20,7 +23,7 @@ export default function Login() {
   let username;
   let password;
 
-  const validarUsuario = (e) => {
+  const validarUsuario = async(e) => {
     e.preventDefault();
     
     username = e.target.username.value
@@ -33,7 +36,7 @@ export default function Login() {
 
     }
 
-    fetch(`http://localhost:3000/insert`,{
+    const respuesta = await fetch(`http://localhost:3000/insert`,{
               
     method : 'POST',
     body: JSON.stringify(obj),
@@ -44,20 +47,26 @@ export default function Login() {
     ).catch(err =>{
         console.error(err)
     }).then(res =>{
-       
+        console.log("el valor data.status en la respuesta es: ",res.status)
        setData(
         {   info: res.data,
             status: res.status
         }
 
        )
+
+       estado = res.status
+
+       console.log("el valor de variable estado es: ",estado)
+
+        if (estado) {
+            navigate(`/disk/${disk}/${particion}/sistema/archivo`)
+        }else{
+            alert("Usuario o contrasena invalidos");
+        }
     })
 
-    if (data.status) {
-        navigate(`/disk/${disk}/${particion}/sistema`)
-    }else{
-        alert("Usuario o contrasena invalidos");
-    }
+    
    
     
     
