@@ -162,7 +162,7 @@ func Mkfile(path string, r string, size int, cont string) (string, error) {
 
 	AddingNewFile(carpetas, inodo0, file, tempSuperblock, -1, superblock_start, cont_folder, cont, r)
 
-	//fmt.Println("\n\n=======================Finalizando Creacion Archivo (MKFILE)===========================")
+	fmt.Println("\n\n=======================Finalizando Creacion Archivo (MKFILE)===========================")
 	datos += "\n\n=======================Finalizando Creacion Archivo (MKFILE)==========================="
 	file.Close()
 
@@ -185,7 +185,7 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 	datos := ""
 	//mkfile -path=/home/archivos/user/docs/Tarea.txt -size=75
 
-	//fmt.Println("\n\n========================= Iniciando AddingNewFile ===========================")
+	fmt.Println("\n\n========================= Iniciando AddingNewFile ===========================")
 	datos += "\n\n========================= Iniciando AddingNewFile ==========================="
 
 	//fmt.Println("\nEl valor de cont_folder es: ", cont_folder)
@@ -234,7 +234,7 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 
 						if string(folder.B_name[:]) == string(folder_bytes[:]) {
 
-							//fmt.Println("\nLa carpeta "+carpeta[cont_folder]+" si existe en el bloque: ", block)
+							fmt.Println("\nLa carpeta "+carpeta[cont_folder]+" si existe en el bloque: ", block)
 							datos += "\nLa carpeta " + carpeta[cont_folder] + " si existe en el bloque: " + strconv.Itoa(int(block))
 
 							//fmt.Println("\n ======= NextInode ======")
@@ -245,7 +245,7 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 								return "", err
 							}
 
-							//fmt.Println("Enviando el INODO: " + strconv.Itoa(int(folder.B_inodo)))
+							fmt.Println("Enviando el INODO: " + strconv.Itoa(int(folder.B_inodo)))
 							datos += "Enviando el INODO: " + strconv.Itoa(int(folder.B_inodo))
 							//grafo, _ = EnlazandoNodos(path, NextInode, file, tempSuperblock, disco, grafo, folder.B_inodo)
 							exist_folder++
@@ -272,7 +272,7 @@ func AddingNewFile(carpeta []string, Inodo Inode, file *os.File, tempSuperblock 
 						if r == "0" {
 
 							if folder.B_inodo == -1 && Extension != "" {
-								//fmt.Println("\nEl parametro r NO esta incluido, llamando a funcion VerificaTipoArchivo")
+								fmt.Println("\nEl parametro r NO esta incluido, llamando a funcion VerificaTipoArchivo")
 								datos += "\nEl parametro r NO esta incluido, llamando a funcion VerificaTipoArchivo"
 								//fmt.Println("\nEl bloque actual es: ", block)
 								datos += "\nEl bloque actual es: " + strconv.Itoa(int(block))

@@ -165,3 +165,94 @@ func SearchByUser(grupo string, Inodo Inode, file *os.File, tempSuperblock Super
 
 	return "", nil
 }
+
+func SearchFolder(folder_name string) int32 {
+
+	fmt.Println("=================== SearchFolder ===================")
+
+	var folder_slice [12]byte
+	copy(folder_slice[:], []byte(folder_name))
+
+	id := User_.Id
+
+	driveletter := string(id[0])
+
+	file, err := AbrirArchivo("./archivos/" + strings.ToUpper(driveletter) + ".dsk")
+	if err != nil {
+		return 0
+	}
+
+	defer file.Close()
+
+	var tempMBR MBR
+
+	if err := LeerObjeto(file, &tempMBR, 0); err != nil {
+		return 0
+	}
+
+	var index int = -1
+
+	for i := 0; i < 4; i++ {
+		if tempMBR.Mbr_partitions[i].Part_size != 0 {
+			if strings.Contains(string(tempMBR.Mbr_partitions[i].Part_id[:]), strings.ToUpper(id)) {
+				fmt.Println("\n****Particion Encontrada en SearchFolder*****")
+				index = i
+			}
+		}
+	}
+
+	var tempSuperblock Superblock
+
+	if err := LeerObjeto(file, &tempSuperblock, int64(tempMBR.Mbr_partitions[index].Part_start)); err != nil {
+		fmt.Println(err)
+	}
+
+	Inodo_start := tempSuperblock.S_inode_start
+
+	var Inodo Inode
+
+	var inodo_vacio Inode
+
+	inodos_ocupados := tempSuperblock.S_inodes_count - tempSuperblock.S_free_inodes_count
+
+	for i := 0; i < int(inodos_ocupados); i++ {
+
+		if err := LeerObjeto(file, &Inodo, int64(Inodo_start+int32(i)*int32(binary.Size(Inode{})))); err != nil {
+			fmt.Println(err)
+		}
+
+		if Inodo == inodo_vacio {
+			continue
+		}
+
+		for _, block := range Inodo.I_block {
+			if block != -1 {
+
+				// carpeta -> 0   archivo ->1
+
+				if string(Inodo.I_type[:]) == "0" { // si es carpeta
+
+					var crrFolderBlock Folderblock
+
+					if err := LeerObjeto(file, &crrFolderBlock, int64(tempSuperblock.S_block_start+block*int32(binary.Size(Folderblock{})))); err != nil {
+						fmt.Println(err)
+					}
+
+					for _, folder := range crrFolderBlock.B_content {
+
+						if folder.B_name == folder_slice {
+							return folder.B_inodo // retorna el numero de inodo
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	return 0
+}

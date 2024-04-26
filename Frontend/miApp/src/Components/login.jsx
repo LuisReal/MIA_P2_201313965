@@ -54,7 +54,7 @@ export default function Login() {
     })
 
     if (data.status) {
-        navigate(`/disk/${disk}/${particion}/sucess`)
+        navigate(`/disk/${disk}/${particion}/sistema`)
     }else{
         alert("Usuario o contrasena invalidos");
     }

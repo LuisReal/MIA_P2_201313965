@@ -3,20 +3,45 @@ package main
 import (
 	//"BackendGo/handlers"
 	Funciones "MIA_P2_201313965/Backend/Funciones"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
-
 	"net/http"
 	"os"
+	"regexp"
+	"strings"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
+var exp = regexp.MustCompile(`(\w+)\.(\w+)`) // para analizar archivos con extension
+
 type Task struct {
 	Command string `json:"comand"`
 }
+
+type Carpeta struct {
+	Name string `json:"name"`
+	Tipo string `json:"tipo"`
+}
+
+var Carpetas []Carpeta
+
+type File struct {
+	Name string `json:"name"`
+	Tipo string `json:"tipo"`
+}
+
+var Archivos []File
+
+/*
+var array_archivos = Archives{
+	{
+		Name: "",
+	},
+}*/
 
 type dataConsola struct {
 	Data   string `json:"data"`
@@ -316,6 +341,202 @@ func getAllDisks(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(discos)
 }
 
+func getSystem(w http.ResponseWriter, r *http.Request) {
+	//vars := mux.Vars(r)
+	//letra := vars["name"]
+	//var archivos []string
+
+	var carpeta Carpeta
+	var archivo File
+	//var array_archivos Archives
+
+	body, err := io.ReadAll(r.Body)
+
+	if err != nil {
+		fmt.Fprintf(w, "Insert a Valid Data")
+	}
+
+	json.Unmarshal(body, &carpeta)
+
+	num_inodo := Funciones.SearchFolder(carpeta.Name)
+
+	fmt.Println("El numero de inodo donde se encuentra es: ", num_inodo)
+
+	id := Funciones.User_.Id
+
+	driveletter := string(id[0])
+
+	file, err := Funciones.AbrirArchivo("./archivos/" + strings.ToUpper(driveletter) + ".dsk")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	defer file.Close()
+
+	var tempMBR Funciones.MBR
+
+	if err := Funciones.LeerObjeto(file, &tempMBR, 0); err != nil {
+		fmt.Println(err)
+	}
+
+	var index int = -1
+
+	for i := 0; i < 4; i++ {
+		if tempMBR.Mbr_partitions[i].Part_size != 0 {
+			if strings.Contains(string(tempMBR.Mbr_partitions[i].Part_id[:]), strings.ToUpper(id)) {
+				fmt.Println("\n****Particion Encontrada*****")
+				index = i
+			}
+		}
+	}
+
+	var tempSuperblock Funciones.Superblock
+
+	if err := Funciones.LeerObjeto(file, &tempSuperblock, int64(tempMBR.Mbr_partitions[index].Part_start)); err != nil {
+		fmt.Println(err)
+	}
+
+	Inodo_start := tempSuperblock.S_inode_start
+
+	var Inodo Funciones.Inode
+
+	if err := Funciones.LeerObjeto(file, &Inodo, int64(Inodo_start+int32(num_inodo)*int32(binary.Size(Funciones.Inode{})))); err != nil {
+		fmt.Println(err)
+	}
+
+	for _, block := range Inodo.I_block {
+		if block != -1 {
+
+			// carpeta -> 0   archivo ->1
+
+			if string(Inodo.I_type[:]) == "0" { // si es carpeta
+
+				var crrFolderBlock Funciones.Folderblock
+
+				if err := Funciones.LeerObjeto(file, &crrFolderBlock, int64(tempSuperblock.S_block_start+block*int32(binary.Size(Funciones.Folderblock{})))); err != nil {
+					fmt.Println(err)
+				}
+
+				for _, folder := range crrFolderBlock.B_content {
+
+					var indice int
+
+					for k := 0; k < len(folder.B_name[:]); k++ {
+						if folder.B_name[k] == 0 { //quitando espacios(los ceros restantes) al slice de B_name
+							indice = k
+							break
+						}
+
+					}
+
+					if folder.B_name[0] != 0 {
+
+						if indice == 0 {
+							carpeta_ := string(folder.B_name[:])
+							carpeta.Name = carpeta_
+
+							matches := exp.FindAllStringSubmatch(carpeta_, -1) //expresion regular para verificar si termina con .txt
+
+							//var Nombre string
+							var Extension string
+
+							for _, match := range matches {
+
+								//Nombre = match[1]
+								Extension = match[2]
+							}
+
+							if Extension == "txt" {
+								carpeta.Tipo = "archivo"
+							} else {
+								carpeta.Tipo = "carpeta"
+							}
+
+							Carpetas = append(Carpetas, carpeta)
+
+						} else {
+							carpeta_ := string(folder.B_name[:indice])
+							carpeta.Name = carpeta_
+
+							matches := exp.FindAllStringSubmatch(carpeta_, -1) //expresion regular para verificar si termina con .txt
+
+							//var Nombre string
+							var Extension string
+
+							for _, match := range matches {
+
+								//Nombre = match[1]
+								Extension = match[2]
+							}
+
+							if Extension == "txt" {
+								carpeta.Tipo = "archivo"
+							} else {
+								carpeta.Tipo = "carpeta"
+							}
+
+							Carpetas = append(Carpetas, carpeta)
+						}
+
+					}
+
+				}
+
+			} else if string(Inodo.I_type[:]) == "1" { // si es archivo
+
+				var crrFile Funciones.Fileblock
+
+				if err := Funciones.LeerObjeto(file, &crrFile, int64(tempSuperblock.S_block_start+block*int32(binary.Size(Funciones.Fileblock{})))); err != nil {
+					fmt.Println(err)
+				}
+
+				var indice int
+
+				for k := 0; k < len(crrFile.B_content[:]); k++ {
+					if crrFile.B_content[k] == 0 { //quitando espacios(los ceros restantes) al slice de B_name
+						indice = k
+						break
+					}
+
+				}
+
+				if crrFile.B_content[0] != 0 {
+
+					if indice == 0 {
+						archivo_ := string(crrFile.B_content[:])
+						archivo.Name = archivo_
+						archivo.Tipo = "archivo"
+
+						Archivos = append(Archivos, archivo)
+					} else {
+						carpeta := string(crrFile.B_content[:indice])
+						archivo.Name = carpeta
+						archivo.Tipo = "archivo"
+
+						Archivos = append(Archivos, archivo)
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	//fmt.Println()
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(Archivos)
+	json.NewEncoder(w).Encode(Carpetas)
+
+	Archivos = nil
+	Carpetas = nil
+
+}
+
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -325,6 +546,7 @@ func main() {
 	router.HandleFunc("/insert", insertComand).Methods("POST")
 	router.HandleFunc("/disk/{name}", getDisk).Methods("GET")
 	router.HandleFunc("/discos", getAllDisks).Methods("GET")
+	router.HandleFunc("/archivo", getSystem).Methods("POST")
 
 	// Tasks Routes
 	/*

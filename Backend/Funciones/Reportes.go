@@ -752,15 +752,16 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 							}
 							fmt.Println("El indice es: ", indice)
 
-							if folder.B_content[j].B_name[0] == 0 {
-								break
-							}
 							var name string
 
-							if indice != 0 {
-								name = string(folder.B_content[j].B_name[:indice])
+							if folder.B_content[j].B_name[0] == 0 {
+								name = ""
 							} else {
-								name = string(folder.B_content[j].B_name[:])
+								if indice != 0 {
+									name = string(folder.B_content[j].B_name[:indice])
+								} else {
+									name = string(folder.B_content[j].B_name[:])
+								}
 							}
 
 							inodo := folder.B_content[j].B_inodo

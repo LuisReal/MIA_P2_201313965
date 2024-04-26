@@ -133,7 +133,7 @@ func Mkdir(path string, r string) (string, error) { //mkdir -path=/bin        //
 		}
 
 	} else { // si esta incluido el parametro r
-
+		fmt.Println("El parametro r esta incluido")
 		var cont_folder int
 
 		data, _ := AddingNewFolder(carpetas, inodo0, file, tempSuperblock, -1, superblock_start, cont_folder)
