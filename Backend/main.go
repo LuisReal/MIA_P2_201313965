@@ -23,15 +23,16 @@ type Task struct {
 }
 
 type Carpeta struct {
-	Name string `json:"name"`
-	Tipo string `json:"tipo"`
+	Name      string `json:"name"`
+	Tipo      string `json:"tipo"`
+	Contenido string `json:"contenido"`
 }
 
 var Carpetas []Carpeta
 
 type File struct {
-	Name string `json:"name"`
-	Tipo string `json:"tipo"`
+	Contenido string `json:"contenido"`
+	Tipo      string `json:"tipo"`
 }
 
 var Archivos []File
@@ -348,7 +349,7 @@ func getSystem(w http.ResponseWriter, r *http.Request) {
 	//var archivos []string
 
 	var carpeta Carpeta
-	var archivo File
+
 	//var array_archivos Archives
 
 	body, err := io.ReadAll(r.Body)
@@ -505,16 +506,16 @@ func getSystem(w http.ResponseWriter, r *http.Request) {
 
 					if indice == 0 {
 						archivo_ := string(crrFile.B_content[:])
-						archivo.Name = archivo_
-						archivo.Tipo = "archivo"
+						carpeta.Contenido = archivo_
+						carpeta.Tipo = "archivo"
 
-						Archivos = append(Archivos, archivo)
+						Carpetas = append(Carpetas, carpeta)
 					} else {
-						carpeta := string(crrFile.B_content[:indice])
-						archivo.Name = carpeta
-						archivo.Tipo = "archivo"
+						archivo_ := string(crrFile.B_content[:indice])
+						carpeta.Contenido = archivo_
+						carpeta.Tipo = "archivo"
 
-						Archivos = append(Archivos, archivo)
+						Carpetas = append(Carpetas, carpeta)
 					}
 
 				}

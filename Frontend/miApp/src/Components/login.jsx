@@ -60,7 +60,7 @@ export default function Login() {
        console.log("el valor de variable estado es: ",estado)
 
         if (estado) {
-            navigate(`/disk/${disk}/${particion}/sistema/archivo`)
+            navigate(`/disk/${disk}/${particion}/sistema/${"raiz"}`)
         }else{
             alert("Usuario o contrasena invalidos");
         }

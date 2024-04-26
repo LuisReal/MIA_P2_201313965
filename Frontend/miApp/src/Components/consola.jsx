@@ -22,7 +22,7 @@ function Consola() {
     const getDatos = (event) => {
         event.preventDefault();
         setDatos({
-            ...datos,
+            ...datos, //esto es para hacer una copia del contenido anterior con el nuevo(de lo contrario se borrara y sustituira)
             [event.target.name] : event.target.value
         })
         

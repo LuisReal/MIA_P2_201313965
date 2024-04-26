@@ -6,6 +6,7 @@ import Reportes from "./Components/reportes"
 import Partition from "./Components/particion"
 import Login from "./Components/login"
 import Sistema from "./Components/sistema"
+import Archivo from "./Components/archivo"
 import { UserContext } from "./Components/usercontext"
 
 import {
@@ -87,6 +88,7 @@ function App() {
               <Route path="/disk/:id" element={<Partition/>}></Route>
               <Route path="/Login/:disk/:particion" element={<Login/>}></Route>
               <Route path="/disk/:disk/:particion/sistema/:archivo" element={<Sistema/>}></Route>
+              <Route path="/contenido" element={<Archivo/>}></Route>
               <Route path="/reports" element={<Reportes/>}></Route>
             </Routes>
           
