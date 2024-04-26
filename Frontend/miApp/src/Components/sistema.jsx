@@ -20,7 +20,7 @@ function Sistema() {
 
     let obj = {
         
-      'name': "9noSemestre"
+      'name': "Files"
 
     }
 
@@ -37,6 +37,7 @@ function Sistema() {
     }).then(res =>{
       
       setData(res)
+      
     })
 
 
@@ -68,7 +69,7 @@ function Sistema() {
               }}
                 onClick={() => onClick(objIterable)}
               >
-                {objIterable.name == "carpeta" &&
+                {objIterable.tipo == "carpeta" &&
                 <>
                   <img src={carpetaIMG} alt="carpeta" style={{ width: "100px" }} /> 
                   <p>{objIterable.name}</p>
@@ -77,7 +78,7 @@ function Sistema() {
                 }
                 
 
-                {objIterable.name == "archivo" && 
+                {objIterable.tipo == "archivo" && 
                 <>
                   <img src={archivoIMG} alt="archivo" style={{ width: "100px" }} /> 
                   <p>{objIterable.name}</p>

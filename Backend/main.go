@@ -529,8 +529,14 @@ func getSystem(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println()
 
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(Archivos)
-	json.NewEncoder(w).Encode(Carpetas)
+
+	if Archivos != nil {
+		json.NewEncoder(w).Encode(Archivos)
+	}
+
+	if Carpetas != nil {
+		json.NewEncoder(w).Encode(Carpetas)
+	}
 
 	Archivos = nil
 	Carpetas = nil
