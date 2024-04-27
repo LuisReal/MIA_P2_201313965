@@ -87,7 +87,9 @@ function App() {
               <Route path="/diskScreen" element={<Disco/>}></Route>
               <Route path="/disk/:id" element={<Partition/>}></Route>
               <Route path="/Login/:disk/:particion" element={<Login/>}></Route>
+
               <Route path="/disk/:disk/:particion/sistema/:archivo" element={<Sistema/>}></Route>
+              
               <Route path="/contenido" element={<Archivo/>}></Route>
               <Route path="/reports" element={<Reportes/>}></Route>
             </Routes>

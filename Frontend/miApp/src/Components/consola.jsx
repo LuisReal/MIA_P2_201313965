@@ -1,10 +1,11 @@
 
-import {useState} from 'react'
+import {useState, useContext} from 'react'
 import React from 'react'
+import { UserContext } from "./usercontext";
 
 function Consola() {
 
-    
+    const {setValue} = useContext(UserContext) //obtiene informacion de value desde otro componente(en particion.jsx)
 
     const [datos, setDatos] = useState(
         {
@@ -14,6 +15,7 @@ function Consola() {
 
     const [showData, setData] = useState(
         {
+            dot: '',
             info: '',
             status: false
         }
@@ -50,9 +52,11 @@ function Consola() {
         ).catch(err =>{
             console.error(err)
         }).then(res =>{
-            
+            setValue(res.dot)
+
             setData(
-                {   info: res.data,
+                {   dot: res.dot,
+                    info: res.data,
                     status: res.status
                 }
             )
@@ -62,9 +66,6 @@ function Consola() {
         document.getElementById("entrada").value = ""
         
     }
-
-
-   
 
     return (
         <>

@@ -3,10 +3,12 @@ package main
 import (
 	//"BackendGo/handlers"
 	Funciones "MIA_P2_201313965/Backend/Funciones"
+	"bufio"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"regexp"
@@ -47,6 +49,7 @@ var array_archivos = Archives{
 type dataConsola struct {
 	Data   string `json:"data"`
 	Status bool   `json:"status"`
+	Dot    string `json:"dot"`
 }
 
 type Login struct {
@@ -69,6 +72,12 @@ type Disk struct {
 }
 
 type Discos []Disk
+
+type Dot struct {
+	Contenido string `json:"contenido"`
+}
+
+var Arraydots []Dot
 
 /*
 var DisksData = Discos{
@@ -129,29 +138,16 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 
 	//fmt.Fprintf(w, "imprimiendo newTask\n%v", input)
 
-	data := Funciones.Analyze(input) // enviando el comando
+	data, dot := Funciones.Analyze(input) // enviando el comando
 
 	consola.Data = data
+	consola.Dot = dot
 	consola.Status = Funciones.User_.Status
 	fmt.Println("El status de User es: ", Funciones.User_.Status)
 	//fmt.Fprintf(w, "\nimprimiendo data consola\n%v", consola)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-
-	/*
-		if Funciones.User_.Status {
-			//fmt.Fprintf(w, "Devolviendo la informacion del login\n")
-			login.Usuario = Funciones.User_.Nombre
-			login.IdPartition = Funciones.User_.Id
-
-			sesionArray = append(sesionArray, login)
-
-			json.NewEncoder(w).Encode(sesionArray)
-		} else {
-			//json.NewEncoder(w).Encode(newTask)
-			json.NewEncoder(w).Encode(consola)
-		}*/
 
 	json.NewEncoder(w).Encode(consola)
 
@@ -545,6 +541,42 @@ func getSystem(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func getDot(w http.ResponseWriter, r *http.Request) {
+
+	var newDot Dot
+
+	lista_dots, err := os.ReadDir("./dot")
+
+	if err != nil {
+		fmt.Println("Hubo un error al leer los archivos dot")
+	}
+
+	for _, f := range lista_dots {
+
+		file, err := os.Open("./dot/" + f.Name())
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+
+			newDot.Contenido += scanner.Text()
+
+		}
+
+		Arraydots = append(Arraydots, newDot)
+	}
+
+	//json.Unmarshal(reqBody, &Disco)
+
+	w.Header().Set("Content-Type", "application/json")
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(Arraydots)
+}
+
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -555,6 +587,7 @@ func main() {
 	router.HandleFunc("/disk/{name}", getDisk).Methods("GET")
 	router.HandleFunc("/discos", getAllDisks).Methods("GET")
 	router.HandleFunc("/archivo", getSystem).Methods("POST")
+	router.HandleFunc("/getDot", getDot).Methods("GET")
 
 	// Tasks Routes
 	/*

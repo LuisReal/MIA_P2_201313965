@@ -1,0 +1,25 @@
+digraph H {
+			labelloc="t";
+			label="Disco A";
+			fontsize="50"
+			graph [pad="0.5", nodesep="0.5", ranksep="1"];
+			node [shape=plaintext]
+			rankdir=LR;label=<
+				<table  border="0" cellborder="1" cellspacing="0"><tr><td colspan="3" style="filled" bgcolor="#FFD700"  port='1'>Reporte MBR</td></tr><tr><td>mbr_tamano</td><td port='2'>62914560</td></tr><tr><td>mbr_fecha_creacion</td><td port='3'>2024-04-26 18:52</td></tr><tr><td>mbr_disk_signature </td><td port='4'>39</td></tr>
+
+				<tr><td colspan="3" align="left" style="filled" bgcolor="lightblue" port='5'>Particion</td></tr><tr><td>status</td><td port='6'>true</td></tr><tr><td>type</td><td port='7'>p</td></tr><tr><td>fit</td><td port='8'>b</td></tr><tr><td>start</td><td port='9'>165</td></tr><tr><td>size</td><td port='10'>20971520</td></tr>
+
+				<tr><td>name</td><td port='11'>part1</td></tr>
+
+				<tr><td colspan="3" align="left" style="filled" bgcolor="lightblue" port='12'>Particion</td></tr><tr><td>status</td><td port='13'>true</td></tr><tr><td>type</td><td port='14'>p</td></tr><tr><td>fit</td><td port='15'>b</td></tr><tr><td>start</td><td port='16'>20971685</td></tr><tr><td>size</td><td port='17'>10485760</td></tr>
+
+				<tr><td>name</td><td port='18'>part2</td></tr>
+
+				<tr><td colspan="3" align="left" style="filled" bgcolor="lightblue" port='19'>Particion</td></tr><tr><td>status</td><td port='20'>false</td></tr><tr><td>type</td><td port='21'>p</td></tr><tr><td>fit</td><td port='22'>b</td></tr><tr><td>start</td><td port='23'>31457445</td></tr><tr><td>size</td><td port='24'>10485760</td></tr>
+
+				<tr><td>name</td><td port='25'>part3</td></tr>
+
+				<tr><td colspan="3" align="left" style="filled" bgcolor="lightblue" port='26'>Particion</td></tr><tr><td>status</td><td port='27'>false</td></tr><tr><td>type</td><td port='28'>p</td></tr><tr><td>fit</td><td port='29'>b</td></tr><tr><td>start</td><td port='30'>41943205</td></tr><tr><td>size</td><td port='31'>10485760</td></tr>
+
+				<tr><td>name</td><td port='32'>part4</td></tr></table>
+				>}

@@ -36,9 +36,10 @@ func getCommandAndParams(input string) (string, string) {
 	return "", input
 }
 
-func Analyze(input string) string {
+func Analyze(input string) (string, string) {
 
 	datos := ""
+	dot := ""
 
 	scanner := bufio.NewScanner(strings.NewReader(input))
 
@@ -70,7 +71,9 @@ func Analyze(input string) string {
 
 				fmt.Println("Command: ", command, "Params: ", params)
 
-				datos += AnalyzeComand(command, params)
+				datos_, dot_ := AnalyzeComand(command, params)
+				datos += datos_
+				dot += dot_
 
 			}
 
@@ -83,11 +86,12 @@ func Analyze(input string) string {
 
 	//se valida ejecucion de comando execute
 
-	return datos
+	return datos, dot
 }
 
-func AnalyzeComand(command string, params string) string {
+func AnalyzeComand(command string, params string) (string, string) {
 	datos := ""
+	dot := ""
 
 	if command == "mkdisk" {
 		datos += bn_mkdisk(params)
@@ -126,13 +130,15 @@ func AnalyzeComand(command string, params string) string {
 	} else if command == "move" {
 		bn_move(params)
 	} else if command == "rep" {
-		datos += bn_reportes(params)
+		datos_, dot_ := bn_reportes(params)
+		datos += datos_
+		dot += dot_
 	} else {
 		fmt.Println("Error: Command not found")
 		datos += "Error: Command not found"
 	}
 
-	return datos
+	return datos, dot
 }
 
 func bn_move(params string) {
@@ -408,8 +414,9 @@ func bn_pause() {
 
 }
 
-func bn_reportes(params string) string {
+func bn_reportes(params string) (string, string) {
 	datos := ""
+	dot := ""
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
 	//execute -path=/home/darkun/Escritorio/basico.mia
@@ -439,16 +446,17 @@ func bn_reportes(params string) string {
 		default:
 			fmt.Println("Error: Flag not found")
 			datos += "Error: Flag not found"
-			return datos
+			return datos, ""
 		}
 	}
 
 	// Call the function
-	data, _ := Reportes(*name, *path, *id, *ruta)
+	data, _, grafo := Reportes(*name, *path, *id, *ruta)
 
 	datos += data
+	dot += grafo
 
-	return datos
+	return datos, dot
 }
 
 func bn_mkdisk(params string) string {
