@@ -7,7 +7,8 @@ import Partition from "./Components/particion"
 import Login from "./Components/login"
 import Sistema from "./Components/sistema"
 import Archivo from "./Components/archivo"
-import { UserContext } from "./Components/usercontext"
+import ImageReport from "./Components/imagereport"
+import { UserContext, GrafoContext } from "./Components/usercontext"
 
 import {
   HashRouter,
@@ -19,6 +20,7 @@ import {
 function App() {
   
   const [value, setValue] = useState("")
+  const [grafo, setGrafo] = useState("")
 
   const logout = (e) => {
     e.preventDefault()
@@ -82,19 +84,33 @@ function App() {
         
 
         <UserContext.Provider value={{ value, setValue }}>{/*configura un value para ser usado en los siguientes componentes*/ }
+          
+          <GrafoContext.Provider value={{ grafo, setGrafo }}>
+            
             <Routes>
               <Route path="/" element={<Consola/>}></Route>
               <Route path="/diskScreen" element={<Disco/>}></Route>
               <Route path="/disk/:id" element={<Partition/>}></Route>
               <Route path="/Login/:disk/:particion" element={<Login/>}></Route>
-
               <Route path="/disk/:disk/:particion/sistema/:archivo" element={<Sistema/>}></Route>
               
               <Route path="/contenido" element={<Archivo/>}></Route>
+              
               <Route path="/reports" element={<Reportes/>}></Route>
+              <Route path="/reporte/:nombre" element={<ImageReport/>}></Route>
+          
             </Routes>
+
+          </GrafoContext.Provider>
           
         </UserContext.Provider>
+        {/*
+        <GrafoContext.Provider value={{ grafo, setGrafo }}>
+          <Routes>
+                <Route path="/reports" element={<Reportes/>}></Route>
+                <Route path="/reporte/:nombre" element={<ImageReport/>}></Route>
+          </Routes>
+        </GrafoContext.Provider>*/}
       </div>
 
       </HashRouter>

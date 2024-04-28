@@ -1,10 +1,13 @@
 import React from 'react'
-import { useState } from "react";
+import { useState, useContext } from "react";
 import svgIMG from "../../assets/svg.png";
-import {Graphviz} from "graphviz-react"
+import { GrafoContext } from "./usercontext";
+import { useNavigate } from "react-router-dom";
 
 function Reportes() {
-  
+  const navigate = useNavigate()
+  const {setGrafo} = useContext(GrafoContext) 
+
   const [data, setData] = useState([]) 
   
   useState(() => {
@@ -26,8 +29,11 @@ function Reportes() {
   }, [])
 
   const onClick = (objIterable) => {
+
+    setGrafo(objIterable.contenido)//guarda el grafo(dot string)
     
-    navigate(`/reporte/info`)
+    
+    navigate(`/reporte/${objIterable.nombre}`)
   }
 
   return (
@@ -48,7 +54,7 @@ function Reportes() {
                 >
                   
                   <img src={svgIMG} alt="disk" style={{ width: "100px" }} />
-                  {/*<p>{objIterable.name}</p>*/}
+                  <p>{objIterable.nombre}</p>
                   
                 </div>
 

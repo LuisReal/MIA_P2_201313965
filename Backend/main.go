@@ -3,12 +3,11 @@ package main
 import (
 	//"BackendGo/handlers"
 	Funciones "MIA_P2_201313965/Backend/Funciones"
-	"bufio"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
+
 	"net/http"
 	"os"
 	"regexp"
@@ -49,7 +48,6 @@ var array_archivos = Archives{
 type dataConsola struct {
 	Data   string `json:"data"`
 	Status bool   `json:"status"`
-	Dot    string `json:"dot"`
 }
 
 type Login struct {
@@ -74,6 +72,7 @@ type Disk struct {
 type Discos []Disk
 
 type Dot struct {
+	Nombre    string `json:"nombre"`
 	Contenido string `json:"contenido"`
 }
 
@@ -122,6 +121,7 @@ type Partition struct {
 func insertComand(w http.ResponseWriter, r *http.Request) {
 
 	var newTask Task
+	var newDot Dot
 	//var login Login
 	//var sesionArray Sesion
 	var consola dataConsola
@@ -138,10 +138,20 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 
 	//fmt.Fprintf(w, "imprimiendo newTask\n%v", input)
 
-	data, dot := Funciones.Analyze(input) // enviando el comando
+	data, dot, nombre_archivo := Funciones.Analyze(input) // enviando el comando
 
 	consola.Data = data
-	consola.Dot = dot
+
+	for i := 0; i < len(dot); i++ { //el tamano del array de dot y el array nombre_archivo son los mismos
+
+		if dot[i] != "" {
+			fmt.Println("El nombre del archivo dot es: ", nombre_archivo[i])
+			newDot.Contenido = dot[i]
+			newDot.Nombre = nombre_archivo[i]
+			Arraydots = append(Arraydots, newDot)
+		}
+	}
+
 	consola.Status = Funciones.User_.Status
 	fmt.Println("El status de User es: ", Funciones.User_.Status)
 	//fmt.Fprintf(w, "\nimprimiendo data consola\n%v", consola)
@@ -543,31 +553,32 @@ func getSystem(w http.ResponseWriter, r *http.Request) {
 
 func getDot(w http.ResponseWriter, r *http.Request) {
 
-	var newDot Dot
+	//var newDot Dot
 
-	lista_dots, err := os.ReadDir("./dot")
+	/*
+		lista_dots, err := os.ReadDir("./dot")
 
-	if err != nil {
-		fmt.Println("Hubo un error al leer los archivos dot")
-	}
-
-	for _, f := range lista_dots {
-
-		file, err := os.Open("./dot/" + f.Name())
 		if err != nil {
-			log.Fatal(err)
-		}
-		defer file.Close()
-
-		scanner := bufio.NewScanner(file)
-		for scanner.Scan() {
-
-			newDot.Contenido += scanner.Text()
-
+			fmt.Println("Hubo un error al leer los archivos dot")
 		}
 
-		Arraydots = append(Arraydots, newDot)
-	}
+		for _, f := range lista_dots {
+
+			file, err := os.Open("./dot/" + f.Name())
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer file.Close()
+
+			scanner := bufio.NewScanner(file)
+			for scanner.Scan() {
+
+				newDot.Contenido += scanner.Text()
+
+			}
+
+			Arraydots = append(Arraydots, newDot)
+		}*/
 
 	//json.Unmarshal(reqBody, &Disco)
 

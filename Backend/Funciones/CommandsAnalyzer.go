@@ -36,10 +36,12 @@ func getCommandAndParams(input string) (string, string) {
 	return "", input
 }
 
-func Analyze(input string) (string, string) {
+var dot []string
+var nombre_dot []string
+
+func Analyze(input string) (string, []string, []string) {
 
 	datos := ""
-	dot := ""
 
 	scanner := bufio.NewScanner(strings.NewReader(input))
 
@@ -71,9 +73,11 @@ func Analyze(input string) (string, string) {
 
 				fmt.Println("Command: ", command, "Params: ", params)
 
-				datos_, dot_ := AnalyzeComand(command, params)
+				datos_, dot_, nombre_archivo_ := AnalyzeComand(command, params)
+
 				datos += datos_
-				dot += dot_
+				dot = append(dot, dot_)
+				nombre_dot = append(nombre_dot, nombre_archivo_)
 
 			}
 
@@ -86,12 +90,13 @@ func Analyze(input string) (string, string) {
 
 	//se valida ejecucion de comando execute
 
-	return datos, dot
+	return datos, dot, nombre_dot
 }
 
-func AnalyzeComand(command string, params string) (string, string) {
+func AnalyzeComand(command string, params string) (string, string, string) {
 	datos := ""
 	dot := ""
+	nombre_archivo := ""
 
 	if command == "mkdisk" {
 		datos += bn_mkdisk(params)
@@ -130,7 +135,8 @@ func AnalyzeComand(command string, params string) (string, string) {
 	} else if command == "move" {
 		bn_move(params)
 	} else if command == "rep" {
-		datos_, dot_ := bn_reportes(params)
+		datos_, dot_, nombre_archivo_ := bn_reportes(params)
+		nombre_archivo = nombre_archivo_
 		datos += datos_
 		dot += dot_
 	} else {
@@ -138,7 +144,7 @@ func AnalyzeComand(command string, params string) (string, string) {
 		datos += "Error: Command not found"
 	}
 
-	return datos, dot
+	return datos, dot, nombre_archivo
 }
 
 func bn_move(params string) {
@@ -414,9 +420,10 @@ func bn_pause() {
 
 }
 
-func bn_reportes(params string) (string, string) {
+func bn_reportes(params string) (string, string, string) {
 	datos := ""
 	dot := ""
+	nombre_archivo := ""
 	//execute -path=/home/darkun/Escritorio/prueba.mia
 
 	//execute -path=/home/darkun/Escritorio/basico.mia
@@ -446,17 +453,17 @@ func bn_reportes(params string) (string, string) {
 		default:
 			fmt.Println("Error: Flag not found")
 			datos += "Error: Flag not found"
-			return datos, ""
+			return datos, "", ""
 		}
 	}
 
 	// Call the function
-	data, _, grafo := Reportes(*name, *path, *id, *ruta)
-
+	data, _, grafo, nombre_archivo_ := Reportes(*name, *path, *id, *ruta)
+	nombre_archivo = nombre_archivo_
 	datos += data
 	dot += grafo
 
-	return datos, dot
+	return datos, dot, nombre_archivo
 }
 
 func bn_mkdisk(params string) string {

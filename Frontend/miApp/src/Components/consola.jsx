@@ -34,12 +34,14 @@ function Consola() {
     const mostrarDatos = (event) => {
         event.preventDefault();
         
-        console.log(datos.comando)
+        //console.log(datos.comando)
         
         let obj = {
         
             'Comand': datos.comando
         }
+
+        console.log("fetch de insert: ",datos.comando)
     
         fetch(`http://localhost:3000/insert`,{
                   
