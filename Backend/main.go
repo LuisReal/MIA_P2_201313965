@@ -48,6 +48,7 @@ var array_archivos = Archives{
 type dataConsola struct {
 	Data   string `json:"data"`
 	Status bool   `json:"status"`
+	User   string `json:"usuario"`
 }
 
 type Login struct {
@@ -138,7 +139,40 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 
 	//fmt.Fprintf(w, "imprimiendo newTask\n%v", input)
 
-	data, dot, nombre_archivo := Funciones.Analyze(input) // enviando el comando
+	data, dot, nombre_archivo, User := Funciones.Analyze(input) // enviando el comando
+
+	var comando = ""
+
+	if input != " " {
+
+		parts := strings.Fields(input)
+
+		//fmt.Println("\nImprimiendo parts: ", parts)
+		if len(parts) > 0 {
+
+			command := strings.ToLower(parts[0])
+			//params := strings.Join(parts[1:], " ")
+
+			comando = command
+
+		}
+	}
+
+	if comando == "login" {
+		consola.User = Funciones.User_.Nombre
+		consola.Status = Funciones.User_.Status
+
+		fmt.Println("El nombre de User es: ", consola.User)
+		fmt.Println("El status de User es: ", consola.Status)
+
+	} else if comando == "logout" {
+
+		consola.User = User.Nombre
+		consola.Status = User.Status
+
+		fmt.Println("El nombre de User es: ", consola.User)
+		fmt.Println("El status de User es: ", consola.Status)
+	}
 
 	consola.Data = data
 
@@ -152,8 +186,6 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	consola.Status = Funciones.User_.Status
-	fmt.Println("El status de User es: ", Funciones.User_.Status)
 	//fmt.Fprintf(w, "\nimprimiendo data consola\n%v", consola)
 
 	w.Header().Set("Content-Type", "application/json")

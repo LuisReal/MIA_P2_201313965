@@ -19,7 +19,7 @@ export default function Login() {
   const { disk, particion } = useParams()
   const {value} = useContext(UserContext) //obtiene informacion de value desde otro componente(en particion.jsx)
   
-  console.log("La info del id es: ", value)
+  //console.log("La info del id es: ", value)
   let username;
   let password;
 
@@ -47,7 +47,7 @@ export default function Login() {
     ).catch(err =>{
         console.error(err)
     }).then(res =>{
-        console.log("el valor data.status en la respuesta es: ",res.status)
+        //console.log("el valor data.status en la respuesta es: ",res.status)
        setData(
         {   info: res.data,
             status: res.status
@@ -57,12 +57,12 @@ export default function Login() {
 
        estado = res.status
 
-       console.log("el valor de variable estado es: ",estado)
+       //console.log("el valor de variable estado es: ",estado)
 
         if (estado) {
             navigate(`/disk/${disk}/${particion}/sistema/${"raiz"}`)
         }else{
-            alert("Usuario o contrasena invalidos");
+            alert("No se pudo iniciar sesion");
         }
     })
 

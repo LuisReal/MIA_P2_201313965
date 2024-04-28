@@ -31,7 +31,7 @@ function Sistema() {
 
   useEffect(() => {
 
-    console.log("Estoy en useEffect es: ", obj.name)
+    //console.log("Estoy en useEffect es: ", obj.name)
 
     fetch(`http://localhost:3000/archivo`,{
               

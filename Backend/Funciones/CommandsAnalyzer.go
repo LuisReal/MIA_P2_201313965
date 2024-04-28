@@ -39,9 +39,10 @@ func getCommandAndParams(input string) (string, string) {
 var dot []string
 var nombre_dot []string
 
-func Analyze(input string) (string, []string, []string) {
+func Analyze(input string) (string, []string, []string, User) {
 
 	datos := ""
+	var usuario User
 
 	scanner := bufio.NewScanner(strings.NewReader(input))
 
@@ -71,10 +72,10 @@ func Analyze(input string) (string, []string, []string) {
 
 				newLine = ""
 
-				fmt.Println("Command: ", command, "Params: ", params)
+				fmt.Println("\n\nCommand: ", command, "Params: ", params)
 
-				datos_, dot_, nombre_archivo_ := AnalyzeComand(command, params)
-
+				datos_, dot_, nombre_archivo_, usuario_ := AnalyzeComand(command, params)
+				usuario = usuario_
 				datos += datos_
 				dot = append(dot, dot_)
 				nombre_dot = append(nombre_dot, nombre_archivo_)
@@ -90,13 +91,14 @@ func Analyze(input string) (string, []string, []string) {
 
 	//se valida ejecucion de comando execute
 
-	return datos, dot, nombre_dot
+	return datos, dot, nombre_dot, usuario
 }
 
-func AnalyzeComand(command string, params string) (string, string, string) {
+func AnalyzeComand(command string, params string) (string, string, string, User) {
 	datos := ""
 	dot := ""
 	nombre_archivo := ""
+	var usuario User
 
 	if command == "mkdisk" {
 		datos += bn_mkdisk(params)
@@ -121,7 +123,10 @@ func AnalyzeComand(command string, params string) (string, string, string) {
 	} else if command == "rmusr" {
 		bn_rmusr(params)
 	} else if command == "logout" {
-		datos += bn_logout()
+		datos_, usuario_ := bn_logout()
+		datos += datos_
+		usuario = usuario_
+
 	} else if command == "pause" {
 		bn_pause()
 	} else if command == "mkdir" {
@@ -144,7 +149,7 @@ func AnalyzeComand(command string, params string) (string, string, string) {
 		datos += "Error: Command not found"
 	}
 
-	return datos, dot, nombre_archivo
+	return datos, dot, nombre_archivo, usuario
 }
 
 func bn_move(params string) {
@@ -801,12 +806,9 @@ func bn_login(input string) string {
 	return datos
 }
 
-func bn_logout() string {
+func bn_logout() (string, User) {
 	datos := ""
-
-	//execute -path=/home/darkun/Escritorio/prueba.mia
-
-	//execute -path=/home/darkun/Escritorio/scripts.sdaa
+	var usuario User
 
 	fmt.Println("\n\n========================= Iniciando Logout =========================")
 	datos += "\n\n========================= Iniciando Logout ========================="
@@ -814,6 +816,10 @@ func bn_logout() string {
 	if User_.Status {
 		fmt.Println("\n Cerrando sesion de usuario: ", User_.Nombre)
 		datos += "\n Cerrando sesion de usuario: " + User_.Nombre
+
+		usuario.Nombre = User_.Nombre
+		usuario.Status = User_.Status
+
 		User_.Nombre = ""
 		User_.Status = false
 		User_.Id = ""
@@ -825,7 +831,7 @@ func bn_logout() string {
 	fmt.Println("\n\n========================= Finalizando Logout =========================")
 	datos += "\n\n========================= Finalizando Logout ========================="
 
-	return datos
+	return datos, usuario
 }
 
 func bn_mkgrp(input string) {

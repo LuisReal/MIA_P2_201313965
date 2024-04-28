@@ -8,22 +8,26 @@ import Login from "./Components/login"
 import Sistema from "./Components/sistema"
 import Archivo from "./Components/archivo"
 import ImageReport from "./Components/imagereport"
+
 import { UserContext, GrafoContext } from "./Components/usercontext"
 
 import {
   HashRouter,
   Routes,
   Route,
-  Link
+  Link,
+  useNavigate
  } from "react-router-dom";
 
 function App() {
-  
+
   const [value, setValue] = useState("")
   const [grafo, setGrafo] = useState("")
 
-  const logout = (e) => {
-    e.preventDefault()
+  const navigate = useNavigate();
+
+  const logout = () => {
+    
 
     let obj = {
         
@@ -31,25 +35,35 @@ function App() {
     }
 
     fetch(`http://localhost:3000/insert`,{
-              
-    method : 'POST',
-    body: JSON.stringify(obj),
-    headers:{
-    'Content-Type': 'application/json'   
-    }
-    }).then(response => response.json()
-    ).catch(err =>{
-        console.error(err)
-    }).then(res =>{
-        
-    })
+                
+      method : 'POST',
+      body: JSON.stringify(obj),
+      headers:{
+      'Content-Type': 'application/json'   
+      }
+      }).then(response => response.json()
+      ).catch(err =>{
+          console.error(err)
+      }).then(res =>{
 
+        console.log("status: ", res.status)
+
+        if (res.status){
+            alert("cerrando sesion: "+ res.usuario)
+        }else{
+            alert("No hay sesion activa")
+        }
+          
+      })
+
+      navigate('/diskScreen')
+    
   }
 
   return (
     
     <>
-      <HashRouter>
+      
       
       <div style={{position:"relative"}}>
         <h1 style={{backgroundColor:"rgb(249, 50, 50)", color:"white", textAlign:"center"}} >Sistema de Archivos</h1>
@@ -75,7 +89,7 @@ function App() {
           </ul>
 
           <div>
-              <button onClick={logout} id="btn-logout" style={{ width:100, marginLeft:10, marginBottom:50}} className="nav-link link-dark" aria-current="page">Logout </button>
+              <button onClick={() => logout()}  id="btn-logout" style={{ width:100, marginLeft:10, marginBottom:50}} className="nav-link link-dark" aria-current="page">Logout </button>
           </div>
           
 
@@ -113,7 +127,7 @@ function App() {
         </GrafoContext.Provider>*/}
       </div>
 
-      </HashRouter>
+     
     </>
     
   )
