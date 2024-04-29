@@ -36,35 +36,43 @@ function Reportes() {
     navigate(`/reporte/${objIterable.nombre}`)
   }
 
-  return (
-    <>  
-        <div style={{width:1500, position:"relative", marginLeft:280, border:"1px solid blue", display: "flex", flexDirection: "row"}}>
-          {
-            data.map((objIterable, index) => {
-              return (
-              
-                <div key={index} style={{
-                  border: "green 1px solid",
-                  display: "flex",
-                  flexDirection: "column", // Alinea los elementos en columnas
-                  alignItems: "center", // Centra verticalmente los elementos
-                  maxWidth: "100px",
-                }}
-                  onClick={() => onClick(objIterable)}
-                >
-                  
-                  <img src={svgIMG} alt="disk" style={{ width: "100px" }} />
-                  <p>{objIterable.nombre}</p>
-                  
-                </div>
-
-              
-              )
-            })
-          }
-        </div>
-    </>
-  )
+  if(data != null){
+    return (
+      <>  
+          <div style={{width:1500, position:"relative", marginLeft:280, border:"1px solid blue", display: "flex", flexDirection: "row"}}>
+            {
+              data.map((objIterable, index) => {
+                return (
+                
+                  <div key={index} style={{
+                    border: "green 1px solid",
+                    display: "flex",
+                    flexDirection: "column", // Alinea los elementos en columnas
+                    alignItems: "center", // Centra verticalmente los elementos
+                    maxWidth: "100px",
+                  }}
+                    onClick={() => onClick(objIterable)}
+                  >
+                    
+                    <img src={svgIMG} alt="disk" style={{ width: "100px" }} />
+                    <p>{objIterable.nombre}</p>
+                    
+                  </div>
+  
+                
+                )
+              })
+            }
+          </div>
+      </>
+    )
+  }else{
+    return(
+      <p id="no-reportes">Todavia no hay reportes creados</p>
+    )
+    
+  }
+  
 }
 
 export default Reportes

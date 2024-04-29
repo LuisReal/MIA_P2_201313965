@@ -5,11 +5,21 @@ import { UserContext } from "./usercontext";
 import carpetaIMG from "../../assets/carpeta.png";
 import archivoIMG from "../../assets/archivo.png";
 
+
 function Sistema() {
 
-  const { disk, particion, archivo } = useParams()
-  const [data, setData] = useState([])
+  const location = useLocation();
 
+  //const [currentPath, setCurrentPath] = useState(location.pathname);
+  const { disk, particion, archivo} = useParams()
+  const [data, setData] = useState([])
+  const [ruta, setRuta] = useState(
+    {
+      path: "/"
+    }
+  )
+
+  
   const [obj, setObjeto] = useState(
     {
       name: archivo,
@@ -31,7 +41,6 @@ function Sistema() {
 
   useEffect(() => {
 
-    //console.log("Estoy en useEffect es: ", obj.name)
 
     fetch(`http://localhost:3000/archivo`,{
               
@@ -44,13 +53,13 @@ function Sistema() {
     ).catch(err =>{
         console.error(err)
     }).then(res =>{
-      
+      //console.log("La respuesta del useEffect es: ", res)
       setData(res)
       
     })
 
 
-  }, [])
+  }, [location]);
 
   const onClick = (objIterable) => {
 
@@ -92,6 +101,13 @@ function Sistema() {
             name: objIterable.name
           }
         )
+
+        setRuta(
+          {
+            path: ruta.path+objIterable.name
+          }
+        )
+
         navigate(`/disk/${disco}/${particion}/sistema/${objIterable.name}`)
       }
       
@@ -101,10 +117,10 @@ function Sistema() {
 
       return (
         <>
-        
-        {/*<button  onClick={() => regresar()} style={{marginLeft:280, width:100, height:50, backgroundColor:"green", color:"white", border: "red 1px solid", borderRadius:"10px"}}>Back</button>*/}
+        {/*<button style={{marginLeft:290,}} onClick={() => navigate(-1)}>go back</button>*/}
+        <p style={{marginLeft:290, padding:10, height:50, border: "black 2px solid", borderRadius:"20px"}}>Ruta</p>
         <br/>
-        <div style={{position: "relative", marginLeft:280, border: "red 1px solid", display: "flex", flexDirection: "row" }}>
+        <div style={{position: "relative", marginLeft:280, display: "flex", flexDirection: "row" }}>
            
           {
             data.map((objIterable, index) => {
@@ -118,6 +134,7 @@ function Sistema() {
                       flexDirection: "column", // Alinea los elementos en columnas
                       alignItems: "center", // Centra verticalmente los elementos
                       maxWidth: "100px",
+                      padding:"5px",
                     }}
                       onClick={() => onClick(objIterable)}
                     >

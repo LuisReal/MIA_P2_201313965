@@ -400,7 +400,7 @@ func getSystem(w http.ResponseWriter, r *http.Request) {
 
 	num_inodo := Funciones.SearchFolder(carpeta.Name)
 
-	fmt.Println("El numero de inodo donde se encuentra es: ", num_inodo)
+	fmt.Println("\n\nEl numero de inodo donde se encuentra es: ", num_inodo)
 
 	id := Funciones.User_.Id
 

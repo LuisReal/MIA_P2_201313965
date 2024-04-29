@@ -41,8 +41,9 @@ export default function Partition() {
   }
 
   return (
-    
 
+  
+    
       <div style={{position: "relative", marginLeft:280, border: "red 1px solid", display: "flex", flexDirection: "row" }}>
         
         {
@@ -70,7 +71,8 @@ export default function Partition() {
         }
 
       </div>
-
+      
+      
     
   )
 }

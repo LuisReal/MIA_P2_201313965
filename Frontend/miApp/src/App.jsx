@@ -66,8 +66,8 @@ function App() {
       
       
       <div style={{position:"relative"}}>
-        <h1 style={{backgroundColor:"rgb(249, 50, 50)", color:"white", textAlign:"center"}} >Sistema de Archivos</h1>
-        <div className="d-flex flex-column flex-shrink-0 p-3" style={{width:280, position:"absolute", marginTop:-10, height:900, backgroundColor:"rgb(93, 173, 226)"}}>
+        <h1 id= "sistema" style={{color:"white", textAlign:"center"}} >Sistema de Archivos</h1>
+        <div id = "navbar" className="d-flex flex-column flex-shrink-0 p-3" style={{width:280, position:"absolute", marginTop:-10, height:900, backgroundColor:"rgb(93, 173, 226)"}}>
           <ul className="nav nav-pills flex-column mb-auto" style={{color:"white", width:250 }}>
             <li className="nav-item">
 
