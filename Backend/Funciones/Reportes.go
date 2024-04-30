@@ -389,17 +389,18 @@ func ReporteDisk(path string, file *os.File, disco string) (string, error, strin
 	name := name_file_[len(name_file_)-1]
 	fmt.Println("El nombre del archivo a crear es(dot): ", name)
 
-	result := path
+	/*
+		result := path
 
-	//exec.Command("dot", "-Tpng", dot, "-o", result)
-	out, err := exec.Command("dot", "-Tpdf", dot, "-o", result).Output()
+		//exec.Command("dot", "-Tpng", dot, "-o", result)
+		out, err := exec.Command("dot", "-Tpdf", dot, "-o", result).Output()
 
-	if err != nil {
+		if err != nil {
 
-		log.Fatal(err)
-	}
+			log.Fatal(err)
+		}
 
-	fmt.Println(string(out))
+		fmt.Println(string(out))*/
 
 	fmt.Println("\n\n========================= Finalizando Reporte DISK ===========================")
 	datos += "\n\n========================= Finalizando Reporte DISK ==========================="
@@ -679,18 +680,18 @@ func ReporteMbr(path string, file *os.File, disco string) (string, error, string
 	name := name_file_[len(name_file_)-1]
 	fmt.Println("El nombre del archivo a crear es(dot): ", name)
 
-	result := path
+	//result := path
 
 	//exec.Command("dot", "-Tpng", dot, "-o", result)
-	out, err := exec.Command("dot", "-Tpdf", dot, "-o", result).Output()
+	//out, err := exec.Command("dot", "-Tpdf", dot, "-o", result).Output()
+	/*
+		if err != nil {
+			fmt.Println("\n Imprimiendo el error en ReportesMBR y EBR")
+			datos += "\n Imprimiendo el error en ReportesMBR y EBR"
+			log.Fatal(err)
+		}*/
 
-	if err != nil {
-		fmt.Println("\n Imprimiendo el error en ReportesMBR y EBR")
-		datos += "\n Imprimiendo el error en ReportesMBR y EBR"
-		log.Fatal(err)
-	}
-
-	fmt.Println(string(out))
+	//fmt.Println(string(out))
 
 	fmt.Println("\n\n========================= Finalizando Reporte MBR ===========================")
 	datos += "\n\n========================= Finalizando Reporte MBR ==========================="
@@ -1095,17 +1096,18 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 	name := name_file_[len(name_file_)-1]
 	fmt.Println("El nombre del archivo a crear es(dot): ", name)
 
-	result := path
+	/*
+		result := path
 
-	//exec.Command("dot", "-Tpng", dot, "-o", result)
-	out, err := exec.Command("dot", "-Tsvg", dot, "-o", result).Output()
+		//exec.Command("dot", "-Tpng", dot, "-o", result)
+		out, err := exec.Command("dot", "-Tsvg", dot, "-o", result).Output()
 
-	if err != nil {
+		if err != nil {
 
-		log.Fatal(err)
-	}
+			log.Fatal(err)
+		}
 
-	fmt.Println(string(out))
+		fmt.Println(string(out))*/
 
 	fmt.Println("\n\n========================= Finalizando Reporte Tree ===========================")
 	datos += "\n\n========================= Finalizando Reporte Tree ==========================="

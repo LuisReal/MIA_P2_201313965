@@ -12,7 +12,7 @@ function Reportes() {
   
   useState(() => {
 
-    fetch(`http://localhost:3000/getDot`,{
+    fetch(`http://18.216.113.114:3000/getDot`,{
               
     method : 'GET',
     mode: "cors",

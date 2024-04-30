@@ -11,7 +11,7 @@ export default function DiskScreen() {
 
   useState(() => {
 
-    fetch(`http://localhost:3000/discos`,{
+    fetch(`http://18.216.113.114:3000/discos`,{
               
     method : 'GET',
     mode: "cors",

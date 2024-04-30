@@ -42,7 +42,7 @@ function Sistema() {
   useEffect(() => {
 
 
-    fetch(`http://localhost:3000/archivo`,{
+    fetch(`http://18.216.113.114:3000/archivo`,{
               
     method : 'POST',
     body: JSON.stringify(obj),
@@ -68,7 +68,7 @@ function Sistema() {
       'name': objIterable.name
     }
 
-    fetch(`http://localhost:3000/archivo`,{
+    fetch(`http://18.216.113.114:3000/archivo`,{
               
     method : 'POST',
     body: JSON.stringify(obj_),
