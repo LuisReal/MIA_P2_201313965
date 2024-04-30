@@ -129,7 +129,7 @@
   margin-left: -10px;
   border-radius: 5px 5px 0px 0px;
   
-  background-image: url('../../assets/laptop.jpg');
+  background-image: url("../../assets/laptop.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -146,7 +146,7 @@
   height: 40px;
   border-radius: 5px;
 
-  background-image: url('../../assets/password.png');
+  background-image: url("../../assets/password.png");
   background-repeat: no-repeat;
   background-size: 25px;
   background-position: 4px center;
@@ -166,7 +166,7 @@
   border-radius: 5px;
   
   height: 40px;
-  background-image: url('../../assets/user.png');
+  background-image: url("../../assets/user.png");
   background-repeat: no-repeat;
   background-size: 25px;
   background-position: 4px center;

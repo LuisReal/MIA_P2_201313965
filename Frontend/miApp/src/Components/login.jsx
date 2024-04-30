@@ -2,6 +2,13 @@
 import { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { UserContext } from "./usercontext";
+import birdIMG from "../../assets/bird.png";
+import logoIMG from "../../assets/logo.jpg";
+import fondoIMG from "../../assets/fondo.jpg"; // importantes hacer esto para que las imagenes sean importadas con npm run build
+import laptopIMG from "../../assets/laptop.jpg"; // importantes hacer esto para que las imagenes sean importadas con npm run build
+import passwordIMG from "../../assets/password.png"; // importantes hacer esto para que las imagenes sean importadas con npm run build
+import userIMG from "../../assets/user.png"; // importantes hacer esto para que las imagenes sean importadas con npm run build
+
 
 export default function Login() {
   const [data, setData] = useState(
@@ -81,8 +88,8 @@ export default function Login() {
             <div className="sidenav">
                     
                     <h2>Sign in</h2>
-                    <img className="image-bird" src="../../assets/bird.png" width="50" height="50" />
-                    <img className="image-logo" src="../../assets/logo.jpg" width="100" height="100"/>  
+                    <img className="image-bird" src={birdIMG} width="50" height="50" />
+                    <img className="image-logo" src={logoIMG} width="100" height="100"/>  
 
                 
             </div>
