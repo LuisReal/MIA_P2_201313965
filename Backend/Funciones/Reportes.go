@@ -8,7 +8,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
+
+	//"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -356,7 +357,7 @@ func ReporteDisk(path string, file *os.File, disco string) (string, error, strin
 	grafo += `"];`
 	grafo += `}`
 
-	dot := "./dot/disk.dot"
+	/*dot := "./dot/disk.dot"
 
 	//Verifica si el directorio existe
 	dir := filepath.Dir(dot)
@@ -382,7 +383,7 @@ func ReporteDisk(path string, file *os.File, disco string) (string, error, strin
 
 	file_dot.WriteString(grafo)
 
-	file_dot.Close()
+	file_dot.Close()*/
 
 	name_file_ := strings.Split(path, "/")
 
@@ -644,7 +645,8 @@ func ReporteMbr(path string, file *os.File, disco string) (string, error, string
 
 	//fmt.Println("\nImprimiendo grafo: ", grafo)
 	//fmt.Println("\nImprimiendo grafo: ", grafo)
-	dot := "./dot/mbr.dot"
+
+	/*dot := "./dot/mbr.dot"
 
 	//Verifica si el directorio existe
 	dir := filepath.Dir(dot)
@@ -670,7 +672,7 @@ func ReporteMbr(path string, file *os.File, disco string) (string, error, string
 
 	file_dot.WriteString(grafo)
 
-	file_dot.Close()
+	file_dot.Close()*/
 
 	//-path=/home/darkun/Escritorio/mbr.pdf
 	//dot -Tpdf mbr.dot  -o mbr.pdf
@@ -1051,12 +1053,15 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 
 	grafo += `}`
 
-	//fmt.Println("\nImprimiendo grafo: ", grafo)
-	dot := "./dot/tree.dot"
-
-	//fmt.Println("\n Creando archivo tree.dot")
 	datos += "\n Creando archivo tree.dot"
 
+	//fmt.Println("\nImprimiendo grafo: ", grafo)
+	/*dot := "./dot/tree.dot"
+
+	//fmt.Println("\n Creando archivo tree.dot")
+
+
+	/*
 	//Verifica si el directorio existe
 	dir := filepath.Dir(dot)
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
@@ -1079,17 +1084,17 @@ func ReporteTree(index int, path string, file *os.File, TempMBR MBR, disco strin
 		defer file.Close()
 	}
 
-	/*
+
 		file_dot, err := os.Create(dot)
 
 		if err != nil {
 			fmt.Println(err)
 			return "", err, ""
-		}*/
+		}
 
 	file_dot.WriteString(grafo)
 
-	file_dot.Close()
+	file_dot.Close()*/
 
 	name_file_ := strings.Split(path, "/")
 
