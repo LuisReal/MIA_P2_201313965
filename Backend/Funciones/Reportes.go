@@ -69,12 +69,13 @@ func Reportes(name string, path string, id string, ruta string) (string, error, 
 
 	//crea las carpetas donde se guardara el archivo
 
-	err2 := CrearArchivo(path)
+	/*
+		err2 := CrearArchivo(path)
 
-	if err2 != nil {
-		fmt.Println(err2)
-		return "", err2, "", ""
-	}
+		if err2 != nil {
+			fmt.Println(err2)
+			return "", err2, "", ""
+		}*/
 
 	if name == "tree" {
 
