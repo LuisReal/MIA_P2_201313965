@@ -16,7 +16,7 @@ export default function Partition() {
 
   useState(() => {
 
-    fetch(`http://18.216.113.114:3000/disk/${disco}`,{
+    fetch(`http://localhost:3000/disk/${disco}`,{
               
     method : 'GET',
     mode: "cors",

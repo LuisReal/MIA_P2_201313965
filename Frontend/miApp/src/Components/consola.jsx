@@ -43,7 +43,7 @@ function Consola() {
 
         console.log("fetch de insert: ",datos.comando)
     
-        fetch(`http://18.216.113.114:3000/insert`,{
+        fetch(`http://localhost:3000/insert`,{
                   
         method : 'POST',
         body: JSON.stringify(obj),

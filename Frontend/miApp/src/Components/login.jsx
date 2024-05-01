@@ -43,7 +43,7 @@ export default function Login() {
 
     }
 
-    const respuesta = await fetch(`http://18.216.113.114:3000/insert`,{
+    const respuesta = await fetch(`http://localhost:3000/insert`,{
               
     method : 'POST',
     body: JSON.stringify(obj),
@@ -67,7 +67,7 @@ export default function Login() {
        //console.log("el valor de variable estado es: ",estado)
 
         if (estado) {
-            navigate(`/disk/${disk}/${particion}/sistema/${"raiz"}`)
+            navigate(`/disk/${disk}/${particion}/sistema/raiz`)
         }else{
             alert("No se pudo iniciar sesion");
         }

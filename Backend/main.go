@@ -119,6 +119,8 @@ type Partition struct {
 	Part_id string `json:"id"`
 }
 
+var contador int
+
 func insertComand(w http.ResponseWriter, r *http.Request) {
 
 	var newTask Task
@@ -176,14 +178,18 @@ func insertComand(w http.ResponseWriter, r *http.Request) {
 
 	consola.Data = data
 
-	for i := 0; i < len(dot); i++ { //el tamano del array de dot y el array nombre_archivo son los mismos
+	if contador == 0 {
+		for i := 0; i < len(dot); i++ { //el tamano del array de dot y el array nombre_archivo son los mismos
 
-		if dot[i] != "" {
-			fmt.Println("El nombre del archivo dot es: ", nombre_archivo[i])
-			newDot.Contenido = dot[i]
-			newDot.Nombre = nombre_archivo[i]
-			Arraydots = append(Arraydots, newDot)
+			if dot[i] != "" {
+				fmt.Println("El nombre del archivo dot es: ", nombre_archivo[i])
+				newDot.Contenido = dot[i]
+				newDot.Nombre = nombre_archivo[i]
+				Arraydots = append(Arraydots, newDot)
+				contador++
+			}
 		}
+
 	}
 
 	//fmt.Fprintf(w, "\nimprimiendo data consola\n%v", consola)
@@ -585,39 +591,12 @@ func getSystem(w http.ResponseWriter, r *http.Request) {
 
 func getDot(w http.ResponseWriter, r *http.Request) {
 
-	//var newDot Dot
-
-	/*
-		lista_dots, err := os.ReadDir("./dot")
-
-		if err != nil {
-			fmt.Println("Hubo un error al leer los archivos dot")
-		}
-
-		for _, f := range lista_dots {
-
-			file, err := os.Open("./dot/" + f.Name())
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer file.Close()
-
-			scanner := bufio.NewScanner(file)
-			for scanner.Scan() {
-
-				newDot.Contenido += scanner.Text()
-
-			}
-
-			Arraydots = append(Arraydots, newDot)
-		}*/
-
-	//json.Unmarshal(reqBody, &Disco)
-
 	w.Header().Set("Content-Type", "application/json")
 
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(Arraydots)
+
+	//Arraydots = nil
 }
 
 func main() {

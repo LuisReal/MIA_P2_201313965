@@ -8,11 +8,11 @@ function Reportes() {
   const navigate = useNavigate()
   const {setGrafo} = useContext(GrafoContext) 
 
-  const [data, setData] = useState([]) 
+  const [datos, setDatos] = useState([]) 
   
   useState(() => {
 
-    fetch(`http://18.216.113.114:3000/getDot`,{
+    fetch(`http://localhost:3000/getDot`,{
               
     method : 'GET',
     mode: "cors",
@@ -23,7 +23,7 @@ function Reportes() {
     ).catch(err =>{
         console.error(err)
     }).then(reports =>{
-       setData(reports)
+       setDatos(reports)
     })
 
   }, [])
@@ -33,15 +33,15 @@ function Reportes() {
     setGrafo(objIterable.contenido)//guarda el grafo(dot string)
     
     
-    navigate(`/reporte/${objIterable.nombre}`)
+    navigate(`/reporte/${objIterable.nombre}`)//llama al componente ImageReport
   }
 
-  if(data != null){
+  if(datos != null){
     return (
       <>  
           <div style={{width:1500, position:"relative", marginLeft:280, border:"1px solid blue", display: "flex", flexDirection: "row"}}>
             {
-              data.map((objIterable, index) => {
+              datos.map((objIterable, index) => {
                 return (
                 
                   <div key={index} style={{

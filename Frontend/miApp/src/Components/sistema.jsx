@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef} from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "./usercontext";
 import carpetaIMG from "../../assets/carpeta.png";
@@ -7,9 +7,7 @@ import archivoIMG from "../../assets/archivo.png";
 
 
 function Sistema() {
-
-  const location = useLocation();
-
+  const location = useLocation()
   //const [currentPath, setCurrentPath] = useState(location.pathname);
   const { disk, particion, archivo} = useParams()
   const [data, setData] = useState([])
@@ -38,11 +36,12 @@ function Sistema() {
 
   let disco = disk.charAt(0);
   
+  
 
   useEffect(() => {
 
-
-    fetch(`http://18.216.113.114:3000/archivo`,{
+    //console.log("la variable archivo es: ", archivo)
+    fetch(`http://localhost:3000/archivo`,{
               
     method : 'POST',
     body: JSON.stringify(obj),
@@ -55,11 +54,12 @@ function Sistema() {
     }).then(res =>{
       //console.log("La respuesta del useEffect es: ", res)
       setData(res)
-      
+
+      //navigate(`/disk/${disco}/${particion}/sistema/${archivo}`)
     })
 
 
-  }, [location]);
+  }, [obj]);//este useEffect se ejecuta cuando la pagina se carga por primera vez(obj.name="/") o cuando la variable obj cambia
 
   const onClick = (objIterable) => {
 
@@ -68,7 +68,7 @@ function Sistema() {
       'name': objIterable.name
     }
 
-    fetch(`http://18.216.113.114:3000/archivo`,{
+    fetch(`http://localhost:3000/archivo`,{
               
     method : 'POST',
     body: JSON.stringify(obj_),
@@ -104,7 +104,7 @@ function Sistema() {
 
         setRuta(
           {
-            path: ruta.path+objIterable.name
+            path: objIterable.name
           }
         )
 
@@ -115,16 +115,32 @@ function Sistema() {
 
   }
 
+  window.onpopstate = () => {//cuando se presiona el boton <- del navegador
+    
+    let path = window.location.pathname.split("/"); // usar esto, ya que la variable archivo, useLocation y navigate en este caso no funcionan
+    let current_folder = path[path.length-1]
+    //console.log("La carpeta actual es: ", current_folder )
+    
+    setObjeto(
+      {
+        name: current_folder
+      }
+    )
+
+    
+  }
+
       return (
         <>
-        {/*<button style={{marginLeft:290,}} onClick={() => navigate(-1)}>go back</button>*/}
+        
         <p style={{marginLeft:290, padding:10, height:50, border: "black 2px solid", borderRadius:"20px"}}>Ruta</p>
         <br/>
         <div style={{position: "relative", marginLeft:280, display: "flex", flexDirection: "row" }}>
            
           {
             data.map((objIterable, index) => {
-  
+
+              
                 
                 return (
                   
@@ -147,6 +163,7 @@ function Sistema() {
                         if (objIterable.tipo == "carpeta" && (objIterable.name != "."&& objIterable.name != "..")){
                             return (
                               <>
+                                
                                 <img src={carpetaIMG} alt="carpeta" style={{ width: "100px" }} /> 
                                 <p>{objIterable.name}</p>
                               </> 
